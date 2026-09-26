@@ -23,6 +23,6 @@ class DatabaseSeeder extends Seeder
             $this->call(DemoSeeder::class);
         }
 
-        $this->call(SettingsSeeder::class);
+        $this->call([SettingsSeeder::class, EmailTemplateSeeder::class]);
     }
 }

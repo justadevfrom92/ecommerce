@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\Emailer;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -36,6 +37,18 @@ class User extends Authenticatable
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class);
+    }
+
+    /** Password reset uses the editable "password_reset" email template. */
+    public function sendPasswordResetNotification(#[\SensitiveParameter] $token): void
+    {
+        $url = route('password.reset', ['token' => $token, 'email' => $this->email]);
+
+        app(Emailer::class)->sendTemplate($this->email, 'password_reset', [
+            'name' => $this->name,
+            'reset_url' => $url,
+            'expires_minutes' => config('auth.passwords.users.expire', 60),
+        ], $url);
     }
 
     public function orders(): HasMany

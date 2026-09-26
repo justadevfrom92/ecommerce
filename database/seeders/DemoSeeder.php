@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\InboundMessage;
 use App\Models\Order;
 use App\Models\Role;
+use App\Models\Subscriber;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -31,6 +33,28 @@ class DemoSeeder extends Seeder
                     'user_id' => $customer->id,
                     'email' => $customer->email,
                     'shipping_name' => $customer->name,
+                ]);
+            }
+        }
+
+        if (Subscriber::doesntExist()) {
+            User::inRandomOrder()->limit(40)->get()->each(fn (User $u) => Subscriber::subscribe($u->email, $u->name, 'signup'));
+            foreach (range(1, 25) as $i) {
+                Subscriber::subscribe(fake()->unique()->safeEmail(), null, 'homepage');
+            }
+            Subscriber::inRandomOrder()->limit(6)->get()->each->unsubscribe();
+        }
+
+        if (InboundMessage::doesntExist()) {
+            foreach (range(1, 14) as $i) {
+                InboundMessage::create([
+                    'source' => fake()->randomElement(['email', 'contact']),
+                    'from_email' => fake()->safeEmail(),
+                    'from_name' => fake()->name(),
+                    'subject' => fake()->randomElement(['Where is my order?', 'Question about sizing', 'Return request', 'Do you ship to Canada?', 'Wholesale enquiry']),
+                    'body' => fake()->paragraphs(2, true),
+                    'read_at' => fake()->boolean(50) ? now() : null,
+                    'created_at' => fake()->dateTimeBetween('-3 weeks'),
                 ]);
             }
         }

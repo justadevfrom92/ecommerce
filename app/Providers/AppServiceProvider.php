@@ -2,10 +2,15 @@
 
 namespace App\Providers;
 
+use App\Events\OrderPaid;
+use App\Events\OrderStatusChanged;
+use App\Listeners\SendStoreEmails;
 use App\Models\Department;
 use App\Models\User;
 use App\Services\Cart;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -24,6 +29,11 @@ class AppServiceProvider extends ServiceProvider
         Gate::before(function (User $user, string $ability) {
             return $user->hasPermission($ability) ? true : null;
         });
+
+        // LogSentEmail (MessageSent) is auto-discovered from app/Listeners.
+        Event::listen(Registered::class, [SendStoreEmails::class, 'welcome']);
+        Event::listen(OrderPaid::class, [SendStoreEmails::class, 'orderPaid']);
+        Event::listen(OrderStatusChanged::class, [SendStoreEmails::class, 'orderStatusChanged']);
 
         View::composer('components.layouts.store', function ($view) {
             $view->with('cartCount', app(Cart::class)->count());

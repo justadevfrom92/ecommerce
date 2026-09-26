@@ -35,6 +35,11 @@ return [
         ],
     ],
 
+    // Mailgun: mail goes out over SMTP (MAIL_MAILER=smtp); these verify its webhooks.
+    'mailgun' => [
+        'webhook_signing_key' => env('MAILGUN_WEBHOOK_SIGNING_KEY'),
+    ],
+
     // Stripe Checkout, called through Laravel's HTTP client (no SDK).
     'stripe' => [
         'secret' => env('STRIPE_SECRET'),

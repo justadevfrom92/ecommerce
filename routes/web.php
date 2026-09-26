@@ -9,8 +9,11 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MailgunWebhookController;
+use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StripeWebhookController;
 use Illuminate\Support\Facades\Route;
@@ -39,7 +42,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout/{order}/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
 });
 
+Route::get('/contact', [ContactController::class, 'create'])->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:5,1');
+Route::post('/newsletter', [NewsletterController::class, 'store'])->middleware('throttle:5,1')->name('newsletter.store');
+Route::match(['get', 'post'], '/newsletter/unsubscribe/{subscriber}', [NewsletterController::class, 'unsubscribe'])
+    ->middleware('signed')->name('newsletter.unsubscribe');
+
+// Webhooks (CSRF-exempt in bootstrap/app.php; each verifies its own signature)
 Route::post('/webhooks/stripe', StripeWebhookController::class)->name('webhooks.stripe');
+Route::post('/webhooks/mailgun/events', [MailgunWebhookController::class, 'events'])->name('webhooks.mailgun.events');
+Route::post('/webhooks/mailgun/inbound', [MailgunWebhookController::class, 'inbound'])->name('webhooks.mailgun.inbound');
 
 /*
 |--------------------------------------------------------------------------
@@ -96,6 +108,38 @@ Route::middleware(['auth', 'can:admin.access'])->prefix('admin')->name('admin.')
     Route::get('/users', [Admin\UserController::class, 'index'])->middleware('can:users.view')->name('users.index');
     Route::resource('users', Admin\UserController::class)->except(['index', 'show'])->middleware('can:users.manage');
     Route::resource('roles', Admin\RoleController::class)->except('show')->middleware('can:roles.manage');
+
+    // Emails
+    Route::prefix('emails')->name('emails.')->group(function () {
+        Route::middleware('can:emails.inbox')->group(function () {
+            Route::get('/inbox', [Admin\Emails\InboxController::class, 'index'])->name('inbox.index');
+            Route::get('/inbox/{message}', [Admin\Emails\InboxController::class, 'show'])->name('inbox.show');
+            Route::post('/inbox/{message}/reply', [Admin\Emails\InboxController::class, 'reply'])->name('inbox.reply');
+            Route::post('/inbox/{message}/unread', [Admin\Emails\InboxController::class, 'markUnread'])->name('inbox.unread');
+            Route::delete('/inbox/{message}', [Admin\Emails\InboxController::class, 'destroy'])->name('inbox.destroy');
+        });
+
+        Route::get('/log', [Admin\Emails\LogController::class, 'index'])->middleware('can:emails.log')->name('log.index');
+
+        Route::middleware('can:emails.templates')->group(function () {
+            Route::get('/templates', [Admin\Emails\TemplateController::class, 'index'])->name('templates.index');
+            Route::get('/templates/{template}/edit', [Admin\Emails\TemplateController::class, 'edit'])->name('templates.edit');
+            Route::put('/templates/{template}', [Admin\Emails\TemplateController::class, 'update'])->name('templates.update');
+            Route::post('/templates/{template}/test', [Admin\Emails\TemplateController::class, 'test'])->middleware('throttle:10,1')->name('templates.test');
+            Route::post('/templates/{template}/reset', [Admin\Emails\TemplateController::class, 'reset'])->name('templates.reset');
+        });
+
+        Route::middleware('can:emails.subscribers')->group(function () {
+            Route::get('/subscribers/export', [Admin\Emails\SubscriberController::class, 'export'])->name('subscribers.export');
+            Route::resource('subscribers', Admin\Emails\SubscriberController::class)->only(['index', 'store', 'update', 'destroy']);
+        });
+
+        Route::middleware('can:emails.campaigns')->group(function () {
+            Route::resource('campaigns', Admin\Emails\CampaignController::class)->except('show');
+            Route::post('/campaigns/{campaign}/test', [Admin\Emails\CampaignController::class, 'test'])->middleware('throttle:10,1')->name('campaigns.test');
+            Route::post('/campaigns/{campaign}/send', [Admin\Emails\CampaignController::class, 'send'])->name('campaigns.send');
+        });
+    });
 
     // Settings
     Route::middleware('can:settings.manage')->group(function () {

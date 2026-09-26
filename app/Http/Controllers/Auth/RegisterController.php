@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Role;
+use App\Models\Subscriber;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -25,6 +26,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::defaults()],
+            'newsletter' => ['nullable', 'boolean'],
             'terms' => ['accepted'],
         ]);
 
@@ -36,6 +38,10 @@ class RegisterController extends Controller
 
         if ($customer = Role::where('slug', 'customer')->first()) {
             $user->roles()->attach($customer);
+        }
+
+        if ($request->boolean('newsletter')) {
+            Subscriber::subscribe($user->email, $user->name, 'signup');
         }
 
         event(new Registered($user));

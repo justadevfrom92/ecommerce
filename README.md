@@ -41,10 +41,32 @@ are seeded too.
 | Department (a slider per category) | `/departments/{slug}` |
 | Category grid | `/categories/{slug}` |
 | Product | `/products/{slug}` |
-| Cart | `/cart` |
+| Cart / checkout | `/cart`, `/checkout` |
+| Contact | `/contact` |
 | Sign up / log in | `/register`, `/login` (also the popup under the account icon) |
-| My account | `/account` |
-| Admin | `/admin`, `/admin/products`, `/admin/users`, … |
+| My account / orders | `/account`, `/account/orders` |
+| Admin | `/admin` (sections below) |
+
+### Admin sections
+
+| Section | URL | Permission |
+| --- | --- | --- |
+| Dashboard | `/admin` | `dashboard.view` (numbers) |
+| Products | `/admin/products` | `products.view` / `products.manage` |
+| Departments | `/admin/departments` | `departments.manage` |
+| Categories | `/admin/categories` | `categories.manage` |
+| Orders | `/admin/orders` | `orders.view` / `orders.manage` |
+| Users | `/admin/users` | `users.view` / `users.manage` |
+| Roles & permissions | `/admin/roles` | `roles.manage` |
+| Inbox | `/admin/emails/inbox` | `emails.inbox` |
+| Outgoing email log | `/admin/emails/log` | `emails.log` |
+| Email templates | `/admin/emails/templates` | `emails.templates` |
+| Newsletter subscribers | `/admin/emails/subscribers` | `emails.subscribers` |
+| Campaigns | `/admin/emails/campaigns` | `emails.campaigns` |
+| Site settings | `/admin/settings` | `settings.manage` |
+| Homepage sliders | `/admin/sliders` | `settings.manage` |
+
+Every admin route also requires `admin.access`.
 
 ### Reusable pieces
 
@@ -64,6 +86,61 @@ permissions. A role flagged *super* passes every check. Permissions work as
 normal Laravel gates (`@can('orders.manage')`, `can:` middleware), and the admin
 sidebar shows only the sections a user's roles allow. After adding a permission
 to the config, run `php artisan db:seed --class=PermissionSeeder`.
+
+## Payments (Stripe)
+
+Stripe Checkout is called through Laravel's HTTP client, so there's no Stripe package.
+
+1. Put your secret key in `.env` as `STRIPE_SECRET` (test keys start with `sk_test_`).
+2. In the Stripe dashboard, add a webhook endpoint `{APP_URL}/webhooks/stripe` for
+   `checkout.session.completed` and put its signing secret in `STRIPE_WEBHOOK_SECRET`.
+   To test locally, use the Stripe CLI: `stripe listen --forward-to localhost:8000/webhooks/stripe`.
+
+Stock is reserved when an order is placed. An order becomes **Paid** on the
+success redirect or the webhook, whichever arrives first. Cancelling or
+refunding an order in the admin puts its stock back. Without `STRIPE_SECRET`,
+orders are saved as *Pending payment*.
+
+## Email (Mailgun)
+
+Mail goes out over Mailgun SMTP using Laravel's built-in `smtp` mailer, so
+there's no Mailgun package. Set in `.env`:
+
+```
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailgun.org
+MAIL_PORT=587
+MAIL_USERNAME=postmaster@mg.yourdomain.com
+MAIL_PASSWORD=your-smtp-password
+MAIL_FROM_ADDRESS=hello@yourdomain.com
+MAILGUN_WEBHOOK_SIGNING_KEY=your-webhook-signing-key
+```
+
+Then in Mailgun:
+
+- **Webhooks** → point *delivered, opened, clicked, permanent/temporary failure,
+  complained, unsubscribed* at `{APP_URL}/webhooks/mailgun/events`. The outgoing
+  log then shows delivery status. Complaints and hard bounces unsubscribe
+  the address.
+- **Receiving → Routes** → *forward* your store address to
+  `{APP_URL}/webhooks/mailgun/inbound`. Incoming mail then lands in the admin inbox,
+  and replies you send from there go out from your store address.
+
+Emails the store sends automatically: welcome, order confirmation, order
+status (shipped/delivered/cancelled/refunded), password reset and newsletter
+welcome. You can edit their wording under **Emails → Templates**.
+
+Until mail is configured, `MAIL_MAILER=log` writes emails to
+`storage/logs/laravel.log`.
+
+### Queue worker
+
+Newsletter campaigns are sent by a queued job. Run a worker in production,
+for example under Supervisor:
+
+```bash
+php artisan queue:work --tries=1
+```
 
 ### CDN files
 

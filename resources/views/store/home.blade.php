@@ -36,5 +36,23 @@
         @foreach ($sliders as $slider)
             <x-product-slider :title="$slider['title']" :products="$slider['products']" :view-all="$slider['viewAll']" />
         @endforeach
+
+        <section class="hero p-4 p-md-5 mt-2" aria-labelledby="newsletter-title">
+            <div class="row align-items-center g-3">
+                <div class="col-lg-6">
+                    <h2 class="h4 mb-1" id="newsletter-title">Get the newsletter</h2>
+                    <p class="text-body-secondary mb-0">New arrivals and member-only offers. No spam, and you can unsubscribe any time.</p>
+                </div>
+                <div class="col-lg-6">
+                    <form method="POST" action="{{ route('newsletter.store') }}" class="d-flex gap-2">
+                        @csrf
+                        <label for="newsletter-email" class="visually-hidden">Email address</label>
+                        <input type="email" id="newsletter-email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="you@example.com" value="{{ auth()->user()?->email }}" required>
+                        <button class="btn btn-primary text-nowrap">Subscribe</button>
+                    </form>
+                    @error('email')<div class="small text-danger mt-1">{{ $message }}</div>@enderror
+                </div>
+            </div>
+        </section>
     </div>
 </x-layouts.store>

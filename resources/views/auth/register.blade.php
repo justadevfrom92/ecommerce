@@ -27,6 +27,10 @@
                         <label for="password_confirmation" class="form-label">Confirm password</label>
                         <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" required autocomplete="new-password">
                     </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" name="newsletter" value="1" id="newsletter" @checked(old('newsletter'))>
+                        <label class="form-check-label small" for="newsletter">Email me news and offers</label>
+                    </div>
                     <div class="form-check mb-4">
                         <input class="form-check-input @error('terms') is-invalid @enderror" type="checkbox" name="terms" value="1" id="terms" @checked(old('terms')) required>
                         <label class="form-check-label small" for="terms">I agree to the terms and privacy policy</label>
