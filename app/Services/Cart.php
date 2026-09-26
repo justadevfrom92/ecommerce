@@ -86,7 +86,7 @@ class Cart
         $lines ??= $this->lines();
         $subtotal = round($lines->sum('total'), 2);
 
-        $freeOver = (float) setting('shipping_flat_rate') > 0 ? (float) setting('free_shipping_over') : 0;
+        $freeOver = (float) setting('free_shipping_over');
         $shipping = $subtotal <= 0 || ($freeOver > 0 && $subtotal >= $freeOver) ? 0.0 : (float) setting('shipping_flat_rate');
         $tax = round($subtotal * ((float) setting('tax_rate') / 100), 2);
 

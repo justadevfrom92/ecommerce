@@ -1,15 +1,18 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AccountOrderController;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StripeWebhookController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,6 +30,16 @@ Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
 Route::patch('/cart/{product}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/{product}', [CartController::class, 'destroy'])->name('cart.destroy');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'create'])->name('checkout.create');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->middleware('throttle:10,1')->name('checkout.store');
+    Route::post('/checkout/{order}/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
+    Route::get('/checkout/{order}/success', [CheckoutController::class, 'success'])->name('checkout.success');
+    Route::get('/checkout/{order}/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
+});
+
+Route::post('/webhooks/stripe', StripeWebhookController::class)->name('webhooks.stripe');
 
 /*
 |--------------------------------------------------------------------------
@@ -56,6 +69,8 @@ Route::middleware('auth')->prefix('account')->name('account.')->group(function (
     Route::put('/', [AccountController::class, 'update'])->name('update');
     Route::get('/password', [AccountController::class, 'editPassword'])->name('password.edit');
     Route::put('/password', [AccountController::class, 'updatePassword'])->name('password.update');
+    Route::get('/orders', [AccountOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [AccountOrderController::class, 'show'])->name('orders.show');
 });
 
 /*

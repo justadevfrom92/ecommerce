@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    // Stripe Checkout, called through Laravel's HTTP client (no SDK).
+    'stripe' => [
+        'secret' => env('STRIPE_SECRET'),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+    ],
+
 ];
