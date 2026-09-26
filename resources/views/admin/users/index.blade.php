@@ -3,6 +3,7 @@
         'name' => ['label' => 'Name', 'sortable' => true],
         'email' => ['label' => 'Email', 'sortable' => true],
         'roles' => ['label' => 'Roles'],
+        'orders' => ['label' => 'Orders', 'class' => 'text-end'],
         'status' => ['label' => 'Status'],
         'last_login_at' => ['label' => 'Last login', 'sortable' => true],
         'created_at' => ['label' => 'Joined', 'sortable' => true],
@@ -21,13 +22,11 @@
                 <option value="inactive" @selected(request('status') === 'inactive')>Inactive</option>
             </select>
         </x-slot:filters>
-        @if (Route::has('admin.users.create'))
+        @can('users.manage')
             <x-slot:toolbar>
-                @can('users.manage')
-                    <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Add user</a>
-                @endcan
+                <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Add user</a>
             </x-slot:toolbar>
-        @endif
+        @endcan
 
         @foreach ($users as $user)
             <tr>
@@ -40,17 +39,18 @@
                         <span class="text-body-secondary small">—</span>
                     @endforelse
                 </td>
+                <td class="text-end">{{ $user->orders_count }}</td>
                 <td>
                     <span class="badge {{ $user->is_active ? 'text-bg-success' : 'text-bg-secondary' }}">{{ $user->is_active ? 'Active' : 'Inactive' }}</span>
                 </td>
                 <td class="text-body-secondary small">{{ $user->last_login_at?->diffForHumans() ?? 'Never' }}</td>
                 <td class="text-body-secondary small">{{ $user->created_at->format('M j, Y') }}</td>
                 <td class="text-end text-nowrap">
-                    @if (Route::has('admin.users.edit'))
-                        @can('users.manage')
+                    @can('users.manage')
+                        @if (! $user->isSuperAdmin() || auth()->user()->isSuperAdmin())
                             <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-outline-secondary" aria-label="Edit {{ $user->name }}"><i class="bi bi-pencil"></i></a>
-                        @endcan
-                    @endif
+                        @endif
+                    @endcan
                 </td>
             </tr>
         @endforeach

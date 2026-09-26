@@ -27,13 +27,11 @@
                 <option value="inactive" @selected(request('status') === 'inactive')>Hidden</option>
             </select>
         </x-slot:filters>
-        @if (Route::has('admin.products.create'))
+        @can('products.manage')
             <x-slot:toolbar>
-                @can('products.manage')
-                    <a href="{{ route('admin.products.create') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Add product</a>
-                @endcan
+                <a href="{{ route('admin.products.create') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Add product</a>
             </x-slot:toolbar>
-        @endif
+        @endcan
 
         @foreach ($products as $product)
             <tr>
@@ -54,11 +52,9 @@
                 <td><span class="badge {{ $product->is_active ? 'text-bg-success' : 'text-bg-secondary' }}">{{ $product->is_active ? 'Active' : 'Hidden' }}</span></td>
                 <td class="text-end text-nowrap">
                     <a href="{{ route('products.show', $product) }}" class="btn btn-sm btn-outline-secondary" target="_blank" rel="noopener" aria-label="View {{ $product->name }} in store"><i class="bi bi-box-arrow-up-right"></i></a>
-                    @if (Route::has('admin.products.edit'))
-                        @can('products.manage')
-                            <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-sm btn-outline-secondary" aria-label="Edit {{ $product->name }}"><i class="bi bi-pencil"></i></a>
-                        @endcan
-                    @endif
+                    @can('products.manage')
+                        <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-sm btn-outline-secondary" aria-label="Edit {{ $product->name }}"><i class="bi bi-pencil"></i></a>
+                    @endcan
                 </td>
             </tr>
         @endforeach

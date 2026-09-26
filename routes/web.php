@@ -81,7 +81,26 @@ Route::middleware('auth')->prefix('account')->name('account.')->group(function (
 Route::middleware(['auth', 'can:admin.access'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', Admin\DashboardController::class)->name('dashboard');
 
+    // Catalog
     Route::get('/products', [Admin\ProductController::class, 'index'])->middleware('can:products.view')->name('products.index');
+    Route::resource('products', Admin\ProductController::class)->except(['index', 'show'])->middleware('can:products.manage');
+    Route::resource('departments', Admin\DepartmentController::class)->except('show')->middleware('can:departments.manage');
+    Route::resource('categories', Admin\CategoryController::class)->except('show')->middleware('can:categories.manage');
 
+    // Sales
+    Route::get('/orders', [Admin\OrderController::class, 'index'])->middleware('can:orders.view')->name('orders.index');
+    Route::get('/orders/{order}', [Admin\OrderController::class, 'show'])->middleware('can:orders.view')->name('orders.show');
+    Route::patch('/orders/{order}', [Admin\OrderController::class, 'update'])->middleware('can:orders.manage')->name('orders.update');
+
+    // People
     Route::get('/users', [Admin\UserController::class, 'index'])->middleware('can:users.view')->name('users.index');
+    Route::resource('users', Admin\UserController::class)->except(['index', 'show'])->middleware('can:users.manage');
+    Route::resource('roles', Admin\RoleController::class)->except('show')->middleware('can:roles.manage');
+
+    // Settings
+    Route::middleware('can:settings.manage')->group(function () {
+        Route::get('/settings', [Admin\SettingsController::class, 'edit'])->name('settings.edit');
+        Route::put('/settings', [Admin\SettingsController::class, 'update'])->name('settings.update');
+        Route::resource('sliders', Admin\HomeSliderController::class)->except('show');
+    });
 });
