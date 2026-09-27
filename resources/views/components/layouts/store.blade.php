@@ -82,18 +82,49 @@
 </main>
 
 <footer class="site-footer mt-5">
-    <div class="container-xxl d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 py-3">
-        <nav aria-label="Footer">
-            <ul class="nav">
-                <li class="nav-item"><a class="nav-link ps-0" href="{{ route('home') }}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('search') }}">Shop all</a></li>
-                @if (Route::has('contact'))
-                    <li class="nav-item"><a class="nav-link" href="{{ route('contact') }}">Contact</a></li>
-                @endif
-                <li class="nav-item"><a class="nav-link" href="{{ auth()->check() ? route('account.edit') : route('login') }}">My account</a></li>
-            </ul>
-        </nav>
-        <p class="mb-0 copyright">&copy; {{ date('Y') }} {{ setting('store_name') }}</p>
+    {{-- Large column menu: one column per department (its categories), plus store links --}}
+    <div class="footer-columns">
+        <div class="container-xxl py-5">
+            <div class="row g-4">
+                <div class="col-lg-3">
+                    <a href="{{ route('home') }}" class="d-inline-block mb-3" aria-label="{{ setting('store_name') }} home">
+                        <img src="{{ asset('images/logo.svg') }}" alt="{{ setting('store_name') }}" width="36" height="36">
+                    </a>
+                    <p class="footer-blurb mb-0">Everything you need across {{ count($navDepartments) }} departments, with free shipping on orders over {{ money(setting('free_shipping_over')) }}.</p>
+                </div>
+                <div class="col-lg-9">
+                    <nav class="row row-cols-2 row-cols-md-3 row-cols-xl-5 g-4" aria-label="Footer">
+                        @foreach ($navDepartments as $dept)
+                            <div class="col">
+                                <h2 class="footer-heading"><a href="{{ route('departments.show', $dept['slug']) }}">{{ $dept['name'] }}</a></h2>
+                                <ul class="list-unstyled footer-links mb-0">
+                                    @foreach ($dept['categories'] as $cat)
+                                        <li><a href="{{ route('categories.show', $cat['slug']) }}">{{ $cat['name'] }}</a></li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endforeach
+                        <div class="col">
+                            <h2 class="footer-heading">Customer service</h2>
+                            <ul class="list-unstyled footer-links mb-0">
+                                <li><a href="{{ route('search') }}">Shop all</a></li>
+                                <li><a href="{{ route('search', ['on_sale' => 1]) }}">Deals</a></li>
+                                <li><a href="{{ auth()->check() ? route('account.orders.index') : route('login') }}">Track order</a></li>
+                                <li><a href="{{ auth()->check() ? route('account.edit') : route('login') }}">My account</a></li>
+                                @if (Route::has('contact'))
+                                    <li><a href="{{ route('contact') }}">Contact</a></li>
+                                @endif
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="container-xxl py-3">
+            <p class="mb-0 copyright">&copy; {{ date('Y') }} {{ setting('store_name') }}</p>
+        </div>
     </div>
 </footer>
 

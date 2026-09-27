@@ -9,7 +9,19 @@
         var next = slider.querySelector('[data-slider-next]');
         if (!track || !prev || !next) return;
 
+        var viewport = slider.querySelector('.slider-viewport');
+
+        // Centre both arrows on the product images, not on the whole card.
+        function placeButtons() {
+            var img = track.querySelector('.product-card-image');
+            if (img && viewport) {
+                var box = img.getBoundingClientRect();
+                viewport.style.setProperty('--slider-btn-top', (box.top - viewport.getBoundingClientRect().top + box.height / 2) + 'px');
+            }
+        }
+
         function update() {
+            placeButtons();
             var max = track.scrollWidth - track.clientWidth - 2;
             prev.disabled = track.scrollLeft <= 2;
             next.disabled = track.scrollLeft >= max;

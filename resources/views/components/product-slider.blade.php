@@ -5,7 +5,7 @@
 @props(['title', 'products', 'viewAll' => null, 'subtitle' => null, 'icon' => null])
 @if ($products->isNotEmpty())
     @php($id = 'slider-'.\Illuminate\Support\Str::slug($title).'-'.\Illuminate\Support\Str::random(4))
-    <section {{ $attributes->class('product-slider mb-5') }} data-slider aria-labelledby="{{ $id }}-title">
+    <section {{ $attributes->class('product-slider') }} data-slider aria-labelledby="{{ $id }}-title">
         <div class="slider-head">
             <div>
                 <h2 class="section-title" id="{{ $id }}-title">
