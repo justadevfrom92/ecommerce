@@ -11,29 +11,27 @@
     {{-- Row 1: logo icon (home) · search toggle, cart popup, account --}}
     @php($searchOpen = request()->routeIs('search') && filled(request('q')))
     <div class="site-topbar">
-        <nav class="container-xxl d-flex align-items-center gap-2 py-2" aria-label="Main">
+        <nav class="container-xxl d-flex align-items-center gap-2 py-2 position-relative" aria-label="Main">
             <a href="{{ route('home') }}" class="site-logo flex-shrink-0" aria-label="{{ setting('store_name') }} home">
                 <img src="{{ asset('images/logo.svg') }}" alt="{{ setting('store_name') }}" width="36" height="36">
             </a>
 
+            {{-- Search sits centred in this row; the icon shows/hides it without moving anything --}}
+            <form action="{{ route('search') }}" method="GET" role="search" id="site-search" class="site-search-slot @if ($searchOpen) is-open @endif">
+                <div class="search-pill">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                    <input type="search" name="q" class="form-control" placeholder="Search products" value="{{ request()->routeIs('search') ? request('q') : '' }}" aria-label="Search products" @unless ($searchOpen) tabindex="-1" @endunless>
+                </div>
+            </form>
+
             <div class="d-flex align-items-center gap-1 ms-auto">
-                <button class="nav-icon-btn" type="button" data-bs-toggle="collapse" data-bs-target="#site-search" aria-controls="site-search" aria-expanded="{{ $searchOpen ? 'true' : 'false' }}" aria-label="Search">
+                <button class="nav-icon-btn" type="button" data-search-toggle aria-controls="site-search" aria-expanded="{{ $searchOpen ? 'true' : 'false' }}" aria-label="Search">
                     <i class="bi bi-search"></i>
                 </button>
                 @include('partials.cart-menu')
                 @include('partials.account-menu')
             </div>
         </nav>
-        <div class="collapse @if ($searchOpen) show @endif" id="site-search">
-            <div class="container-xxl pb-3">
-                <form action="{{ route('search') }}" method="GET" role="search" class="site-search mx-auto">
-                    <div class="search-pill">
-                        <i class="bi bi-search" aria-hidden="true"></i>
-                        <input type="search" name="q" class="form-control" placeholder="Search products" value="{{ request()->routeIs('search') ? request('q') : '' }}" aria-label="Search products">
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
 
     {{-- Row 2: Category menu · page links --}}

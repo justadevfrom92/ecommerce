@@ -98,12 +98,20 @@
         if (message && !window.confirm(message)) e.preventDefault();
     });
 
-    /* ---------- Search toggle: focus the field when it opens ---------- */
-    var searchPanel = document.getElementById('site-search');
-    if (searchPanel) {
-        searchPanel.addEventListener('shown.bs.collapse', function () {
-            var input = searchPanel.querySelector('input[name="q"]');
-            if (input) input.focus();
+    /* ---------- Search toggle: show/hide the centred search bar in place ---------- */
+    var searchForm = document.getElementById('site-search');
+    var searchToggle = document.querySelector('[data-search-toggle]');
+    if (searchForm && searchToggle) {
+        var searchInput = searchForm.querySelector('input[name="q"]');
+        function setSearch(open) {
+            searchForm.classList.toggle('is-open', open);
+            searchToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            searchInput.tabIndex = open ? 0 : -1;
+            if (open) searchInput.focus({ preventScroll: true });
+        }
+        searchToggle.addEventListener('click', function () { setSearch(!searchForm.classList.contains('is-open')); });
+        searchInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') { setSearch(false); searchToggle.focus(); }
         });
     }
 
