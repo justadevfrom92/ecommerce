@@ -21,8 +21,6 @@
             ['route' => 'admin.emails.inbox.index', 'label' => 'Inbox', 'icon' => 'inbox', 'can' => 'emails.inbox', 'match' => 'admin.emails.inbox.*'],
             ['route' => 'admin.emails.log.index', 'label' => 'Outgoing log', 'icon' => 'send', 'can' => 'emails.log', 'match' => 'admin.emails.log.*'],
             ['route' => 'admin.emails.templates.index', 'label' => 'Templates', 'icon' => 'file-earmark-text', 'can' => 'emails.templates', 'match' => 'admin.emails.templates.*'],
-            ['route' => 'admin.emails.subscribers.index', 'label' => 'Subscribers', 'icon' => 'person-lines-fill', 'can' => 'emails.subscribers', 'match' => 'admin.emails.subscribers.*'],
-            ['route' => 'admin.emails.campaigns.index', 'label' => 'Campaigns', 'icon' => 'megaphone', 'can' => 'emails.campaigns', 'match' => 'admin.emails.campaigns.*'],
         ],
         'Settings' => [
             ['route' => 'admin.settings.edit', 'label' => 'Site settings', 'icon' => 'gear', 'can' => 'settings.manage', 'match' => 'admin.settings.*'],

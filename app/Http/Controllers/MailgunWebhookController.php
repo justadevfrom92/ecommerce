@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\EmailLog;
 use App\Models\InboundMessage;
-use App\Models\Subscriber;
 use App\Models\User;
 use App\Services\Mailgun;
 use Illuminate\Http\Request;
@@ -33,7 +32,6 @@ class MailgunWebhookController extends Controller
         $data = $request->input('event-data', []);
         $event = $data['event'] ?? null;
         $messageId = trim((string) ($data['message']['headers']['message-id'] ?? ''), '<>');
-        $recipient = strtolower((string) ($data['recipient'] ?? ''));
 
         if ($messageId !== '' && isset(self::EVENT_STATUS[$event])) {
             $status = $event === 'failed' && ($data['severity'] ?? null) === 'permanent' ? 'bounced' : self::EVENT_STATUS[$event];
@@ -49,11 +47,6 @@ class MailgunWebhookController extends Controller
                 'error' => in_array($status, ['failed', 'bounced'], true) ? mb_substr((string) ($data['delivery-status']['message'] ?? $data['delivery-status']['description'] ?? ''), 0, 2000) : null,
                 'status_at' => now(),
             ]);
-        }
-
-        // Stop mailing people who unsubscribe via Mailgun, complain, or hard-bounce.
-        if ($recipient !== '' && (in_array($event, ['unsubscribed', 'complained'], true) || ($event === 'failed' && ($data['severity'] ?? null) === 'permanent'))) {
-            Subscriber::where('email', $recipient)->subscribed()->first()?->unsubscribe();
         }
 
         return response('OK');

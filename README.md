@@ -42,9 +42,8 @@ are seeded too.
 | Category grid | `/categories/{slug}` |
 | Product | `/products/{slug}` |
 | Cart / checkout | `/cart`, `/checkout` |
-| Contact | `/contact` |
 | Sign up / log in | `/register`, `/login` (also the popup under the account icon) |
-| My account / orders | `/account`, `/account/orders` |
+| My account (profile, phone, address, orders, saved payments) | `/account`, `/account/orders`, `/account/payments` |
 | Admin | `/admin` (sections below) |
 
 ### Admin sections
@@ -61,8 +60,6 @@ are seeded too.
 | Inbox | `/admin/emails/inbox` | `emails.inbox` |
 | Outgoing email log | `/admin/emails/log` | `emails.log` |
 | Email templates | `/admin/emails/templates` | `emails.templates` |
-| Newsletter subscribers | `/admin/emails/subscribers` | `emails.subscribers` |
-| Campaigns | `/admin/emails/campaigns` | `emails.campaigns` |
 | Site settings | `/admin/settings` | `settings.manage` |
 | Homepage sliders | `/admin/sliders` | `settings.manage` |
 
@@ -96,6 +93,11 @@ Stripe Checkout is called through Laravel's HTTP client, so there's no Stripe pa
    `checkout.session.completed` and put its signing secret in `STRIPE_WEBHOOK_SECRET`.
    To test locally, use the Stripe CLI: `stripe listen --forward-to localhost:8000/webhooks/stripe`.
 
+Saved payment methods (the account **Payments** tab) are stored by Stripe, not
+in this database: customers add them on a Stripe-hosted page, and the site keeps
+only the Stripe customer id. Passwords are changed only through an emailed,
+single-use reset link.
+
 Stock is reserved when an order is placed. An order becomes **Paid** on the
 success redirect or the webhook, whichever arrives first. Cancelling or
 refunding an order in the admin puts its stock back. Without `STRIPE_SECRET`,
@@ -127,20 +129,10 @@ Then in Mailgun:
   and replies you send from there go out from your store address.
 
 Emails the store sends automatically: welcome, order confirmation, order
-status (shipped/delivered/cancelled/refunded), password reset and newsletter
-welcome. You can edit their wording under **Emails → Templates**.
+status (shipped/delivered/cancelled/refunded) and password reset. You can edit their wording under **Emails → Templates**.
 
 Until mail is configured, `MAIL_MAILER=log` writes emails to
 `storage/logs/laravel.log`.
-
-### Queue worker
-
-Newsletter campaigns are sent by a queued job. Run a worker in production,
-for example under Supervisor:
-
-```bash
-php artisan queue:work --tries=1
-```
 
 ### CDN files
 

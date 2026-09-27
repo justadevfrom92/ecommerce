@@ -77,7 +77,6 @@ class TemplateController extends Controller
             'order_url' => route('home'),
             'reset_url' => route('home'),
             'expires_minutes' => 60,
-            'unsubscribe_url' => route('home'),
         ];
 
         return array_intersect_key($samples, array_flip($template->placeholders()));

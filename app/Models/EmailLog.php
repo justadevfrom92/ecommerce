@@ -4,9 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['to', 'subject', 'template_key', 'campaign_id', 'message_id', 'status', 'error', 'status_at'])]
+#[Fillable(['to', 'subject', 'template_key', 'message_id', 'status', 'error', 'status_at'])]
 class EmailLog extends Model
 {
     public const STATUSES = [
@@ -22,11 +21,6 @@ class EmailLog extends Model
     protected function casts(): array
     {
         return ['status_at' => 'datetime'];
-    }
-
-    public function campaign(): BelongsTo
-    {
-        return $this->belongsTo(Campaign::class);
     }
 
     public function badge(): string

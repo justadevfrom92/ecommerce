@@ -6,12 +6,16 @@
                 @csrf
                 @if ($editing) @method('PUT') @endif
                 <x-form.input name="title" label="Title" :value="$slider->title" required maxlength="100" />
-                <x-form.select name="source" label="Products to show" :options="\App\Models\HomeSlider::SOURCES" :value="$slider->source" required />
-                <x-form.select name="department_id" label="Department" placeholder="—" :options="$departments->pluck('name', 'id')->all()"
-                    :value="$slider->source === 'department' ? $slider->source_id : null" help="Used when “A department” is chosen." />
-                <x-form.select name="category_id" label="Category" placeholder="—"
-                    :options="$categories->groupBy(fn ($c) => $c->department->name)->map(fn ($g) => $g->pluck('name', 'id')->all())->all()"
-                    :value="$slider->source === 'category' ? $slider->source_id : null" help="Used when “A category” is chosen." />
+                <x-form.select name="source" label="Which products does this slider show?" :options="\App\Models\HomeSlider::SOURCES" :value="$slider->source" required data-slider-source />
+                <div data-show-for="department" @if (old('source', $slider->source) !== 'department') hidden @endif>
+                    <x-form.select name="department_id" label="Department" placeholder="Choose a department…" :options="$departments->pluck('name', 'id')->all()"
+                        :value="$slider->source === 'department' ? $slider->source_id : null" />
+                </div>
+                <div data-show-for="category" @if (old('source', $slider->source) !== 'category') hidden @endif>
+                    <x-form.select name="category_id" label="Category" placeholder="Choose a category…"
+                        :options="$categories->groupBy(fn ($c) => $c->department->name)->map(fn ($g) => $g->pluck('name', 'id')->all())->all()"
+                        :value="$slider->source === 'category' ? $slider->source_id : null" />
+                </div>
                 <div class="row">
                     <x-form.input class="col-6" name="max_items" label="Max products" type="number" min="4" max="30" :value="$slider->max_items" required />
                     <x-form.input class="col-6" name="sort_order" label="Sort order" type="number" min="0" :value="$slider->sort_order" required />

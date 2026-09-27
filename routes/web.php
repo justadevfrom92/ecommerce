@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountOrderController;
+use App\Http\Controllers\AccountPaymentController;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\PasswordResetController;
@@ -12,7 +13,6 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MailgunWebhookController;
-use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StripeWebhookController;
 use Illuminate\Support\Facades\Route;
@@ -40,10 +40,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout/{order}/success', [CheckoutController::class, 'success'])->name('checkout.success');
     Route::get('/checkout/{order}/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
 });
-
-Route::post('/newsletter', [NewsletterController::class, 'store'])->middleware('throttle:5,1')->name('newsletter.store');
-Route::match(['get', 'post'], '/newsletter/unsubscribe/{subscriber}', [NewsletterController::class, 'unsubscribe'])
-    ->middleware('signed')->name('newsletter.unsubscribe');
 
 // Webhooks (CSRF-exempt in bootstrap/app.php; each verifies its own signature)
 Route::post('/webhooks/stripe', StripeWebhookController::class)->name('webhooks.stripe');
@@ -79,6 +75,10 @@ Route::middleware('auth')->prefix('account')->name('account.')->group(function (
     Route::get('/', [AccountController::class, 'edit'])->name('edit');
     Route::put('/', [AccountController::class, 'update'])->name('update');
     Route::post('/password-reset', [AccountController::class, 'sendPasswordReset'])->middleware('throttle:3,10')->name('password.reset-link');
+    Route::get('/payments', [AccountPaymentController::class, 'index'])->name('payments.index');
+    Route::post('/payments', [AccountPaymentController::class, 'store'])->middleware('throttle:10,1')->name('payments.store');
+    Route::post('/payments/{method}/default', [AccountPaymentController::class, 'makeDefault'])->where('method', 'pm_[A-Za-z0-9]+')->name('payments.default');
+    Route::delete('/payments/{method}', [AccountPaymentController::class, 'destroy'])->where('method', 'pm_[A-Za-z0-9]+')->name('payments.destroy');
     Route::get('/orders', [AccountOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [AccountOrderController::class, 'show'])->name('orders.show');
 });
@@ -127,16 +127,6 @@ Route::middleware(['auth', 'can:admin.access'])->prefix('admin')->name('admin.')
             Route::post('/templates/{template}/reset', [Admin\Emails\TemplateController::class, 'reset'])->name('templates.reset');
         });
 
-        Route::middleware('can:emails.subscribers')->group(function () {
-            Route::get('/subscribers/export', [Admin\Emails\SubscriberController::class, 'export'])->name('subscribers.export');
-            Route::resource('subscribers', Admin\Emails\SubscriberController::class)->only(['index', 'store', 'update', 'destroy']);
-        });
-
-        Route::middleware('can:emails.campaigns')->group(function () {
-            Route::resource('campaigns', Admin\Emails\CampaignController::class)->except('show');
-            Route::post('/campaigns/{campaign}/test', [Admin\Emails\CampaignController::class, 'test'])->middleware('throttle:10,1')->name('campaigns.test');
-            Route::post('/campaigns/{campaign}/send', [Admin\Emails\CampaignController::class, 'send'])->name('campaigns.send');
-        });
     });
 
     // Settings

@@ -17,7 +17,11 @@
             <div class="col-lg-7">
                 <section class="pb-4 mb-4 border-bottom">
                     <h2 class="h4 fw-extrabold mb-1">Shipping Details</h2>
-                    @php($f = fn ($field, $fallback = null) => old($field, $last?->{$field} ?? $fallback))
+                    @php
+                        $profile = ['shipping_name' => $user->name, 'shipping_phone' => $user->phone, 'shipping_line1' => $user->address_line1, 'shipping_line2' => $user->address_line2,
+                            'shipping_city' => $user->city, 'shipping_state' => $user->state, 'shipping_postal_code' => $user->postal_code, 'shipping_country' => $user->country];
+                        $f = fn ($field, $fallback = null) => old($field, ($user->hasAddress() ? $profile[$field] : null) ?? $last?->{$field} ?? $fallback);
+                    @endphp
                     <div class="row g-3">
                         <div class="col-md-7">
                             <label class="form-label" for="shipping_name">Full name</label>

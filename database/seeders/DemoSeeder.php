@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\InboundMessage;
 use App\Models\Order;
 use App\Models\Role;
-use App\Models\Subscriber;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -35,14 +34,6 @@ class DemoSeeder extends Seeder
                     'shipping_name' => $customer->name,
                 ]);
             }
-        }
-
-        if (Subscriber::doesntExist()) {
-            User::inRandomOrder()->limit(40)->get()->each(fn (User $u) => Subscriber::subscribe($u->email, $u->name, 'signup'));
-            foreach (range(1, 25) as $i) {
-                Subscriber::subscribe(fake()->unique()->safeEmail(), null, 'homepage');
-            }
-            Subscriber::inRandomOrder()->limit(6)->get()->each->unsubscribe();
         }
 
         if (InboundMessage::doesntExist()) {

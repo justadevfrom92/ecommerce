@@ -50,14 +50,6 @@ class EmailTemplate extends Model
             'body' => "Hi {{name}},\n\nWe received a request to reset your password. The link below works for {{expires_minutes}} minutes.\n\nIf you didn't ask for this, you can ignore this email.",
             'button_text' => 'Reset password',
         ],
-        'newsletter_welcome' => [
-            'name' => 'Newsletter welcome',
-            'description' => 'Sent when someone subscribes to the newsletter.',
-            'placeholders' => ['store_name', 'unsubscribe_url'],
-            'subject' => "You're subscribed to {{store_name}} news",
-            'body' => "Thanks for subscribing! You'll be the first to hear about new arrivals and offers.\n\nChanged your mind? Unsubscribe any time: {{unsubscribe_url}}",
-            'button_text' => null,
-        ],
     ];
 
     public function placeholders(): array

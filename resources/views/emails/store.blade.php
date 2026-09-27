@@ -32,9 +32,6 @@
                     <tr>
                         <td style="padding:16px 28px;border-top:1px solid #eef1f6;font-size:12px;color:#6c757d;">
                             &copy; {{ date('Y') }} {{ setting('store_name') }}
-                            @if ($unsubscribeUrl)
-                                &middot; <a href="{{ $unsubscribeUrl }}" style="color:#6c757d;">Unsubscribe</a>
-                            @endif
                         </td>
                     </tr>
                 </table>

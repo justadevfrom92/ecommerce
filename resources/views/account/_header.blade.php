@@ -47,21 +47,25 @@
     <div class="col-xl-4">
         <div class="panel panel-body h-100">
             <h2 class="h5 fw-extrabold pb-3 mb-3 dashed-bottom">Default address</h2>
+            @php
+                $addr = $user->hasAddress()
+                    ? [$user->address_line1, $user->address_line2, trim($user->city.', '.$user->state, ', ').' '.$user->postal_code, $user->country]
+                    : ($lastOrder ? [$lastOrder->shipping_line1, $lastOrder->shipping_line2, trim($lastOrder->shipping_city.', '.$lastOrder->shipping_state, ', ').' '.$lastOrder->shipping_postal_code, $lastOrder->shipping_country] : []);
+                $phone = $user->phone ?: $lastOrder?->shipping_phone;
+            @endphp
             <div class="kv mb-3 pb-3 dashed-bottom" style="grid-template-columns: 5rem 1fr">
                 <span class="k">Address</span>
                 <span class="text-end" style="color: var(--ms-heading)">
-                    @if ($lastOrder)
-                        {{ $lastOrder->shipping_line1 }}<br>{{ trim($lastOrder->shipping_city.', '.$lastOrder->shipping_state, ', ') }} {{ $lastOrder->shipping_postal_code }}<br>{{ $lastOrder->shipping_country }}
-                    @else
-                        <span class="text-muted-2">Saved from your first order</span>
-                    @endif
+                    @forelse (array_filter($addr) as $line)
+                        {{ $line }}@unless ($loop->last)<br>@endunless
+                    @empty
+                        <a href="{{ route('account.edit') }}#address">Add your address</a>
+                    @endforelse
                 </span>
             </div>
             <div class="kv" style="grid-template-columns: 5rem 1fr">
                 <span class="k">Email</span><span class="text-end text-truncate"><span style="color: var(--ms-primary)">{{ $user->email }}</span></span>
-                @if ($lastOrder?->shipping_phone)
-                    <span class="k">Phone</span><span class="text-end" style="color: var(--ms-primary)">{{ $lastOrder->shipping_phone }}</span>
-                @endif
+                <span class="k">Phone</span><span class="text-end">@if ($phone)<span style="color: var(--ms-primary)">{{ $phone }}</span>@else<a href="{{ route('account.edit') }}#phone">Add your phone</a>@endif</span>
             </div>
         </div>
     </div>
@@ -70,4 +74,5 @@
 <ul class="nav icon-tabs mb-4">
     <li class="nav-item"><a href="{{ route('account.orders.index') }}" class="nav-link @if (request()->routeIs('account.orders.*')) active @endif"><i class="bi bi-cart-fill me-1"></i>Orders <span class="count">({{ $orderCount }})</span></a></li>
     <li class="nav-item"><a href="{{ route('account.edit') }}" class="nav-link @if (request()->routeIs('account.edit')) active @endif"><i class="bi bi-person-fill me-1"></i>Personal info</a></li>
+    <li class="nav-item"><a href="{{ route('account.payments.index') }}" class="nav-link @if (request()->routeIs('account.payments.*')) active @endif"><i class="bi bi-credit-card-fill me-1"></i>Payments</a></li>
 </ul>

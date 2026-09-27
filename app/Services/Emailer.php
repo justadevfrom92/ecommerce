@@ -34,7 +34,6 @@ class Emailer
             buttonText: $buttonUrl ? $template->button_text : null,
             buttonUrl: $buttonUrl,
             templateKey: $key,
-            unsubscribeUrl: $vars['unsubscribe_url'] ?? null,
         );
     }
 
@@ -52,7 +51,6 @@ class Emailer
                 'to' => $to,
                 'subject' => $mail->mailSubject,
                 'template_key' => $mail->templateKey,
-                'campaign_id' => $mail->campaignId,
                 'status' => 'failed',
                 'error' => mb_substr($e->getMessage(), 0, 2000),
                 'status_at' => now(),

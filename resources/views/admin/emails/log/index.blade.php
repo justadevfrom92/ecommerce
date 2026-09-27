@@ -15,7 +15,6 @@
             </select>
             <select name="type" class="form-select form-select-sm w-auto" aria-label="Filter by type" data-auto-submit>
                 <option value="">Any type</option>
-                <option value="campaign" @selected(request('type') === 'campaign')>Campaigns</option>
                 @foreach (\App\Models\EmailTemplate::DEFAULTS as $key => $t)
                     <option value="{{ $key }}" @selected(request('type') === $key)>{{ $t['name'] }}</option>
                 @endforeach
@@ -28,9 +27,7 @@
                 <td class="small">{{ $log->to }}</td>
                 <td class="small">{{ \Illuminate\Support\Str::limit($log->subject, 70) }}</td>
                 <td class="small text-body-secondary">
-                    @if ($log->campaign)
-                        Campaign
-                    @elseif ($log->template_key)
+                    @if ($log->template_key)
                         {{ \App\Models\EmailTemplate::DEFAULTS[$log->template_key]['name'] ?? \Illuminate\Support\Str::headline($log->template_key) }}
                     @else
                         —

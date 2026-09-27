@@ -130,6 +130,17 @@
         });
     });
 
+    /* ---------- Homepage slider form: show the department/category picker only when needed ---------- */
+    document.querySelectorAll('[data-slider-source]').forEach(function (select) {
+        function sync() {
+            document.querySelectorAll('[data-show-for]').forEach(function (el) {
+                el.hidden = el.getAttribute('data-show-for') !== select.value;
+            });
+        }
+        select.addEventListener('change', sync);
+        sync();
+    });
+
     /* ---------- Product image preview on upload ---------- */
     document.querySelectorAll('[data-image-preview]').forEach(function (input) {
         var target = document.getElementById(input.getAttribute('data-image-preview'));

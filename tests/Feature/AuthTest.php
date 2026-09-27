@@ -93,6 +93,20 @@ class AuthTest extends TestCase
 
         $this->actingAs($user)->put('/account', ['name' => 'New Name', 'email' => 'new@example.com'])->assertSessionHasNoErrors();
         $this->assertSame('New Name', $user->fresh()->name);
+
+        // Phone and address sections
+        $this->actingAs($user)->put('/account', [
+            'name' => 'New Name', 'email' => 'new@example.com', 'phone' => '555-0100',
+            'address_line1' => '1 Main St', 'city' => 'Springfield', 'postal_code' => '12345', 'country' => 'us',
+        ])->assertSessionHasNoErrors();
+        $user->refresh();
+        $this->assertSame('555-0100', $user->phone);
+        $this->assertSame('US', $user->country);
+        $this->actingAs($user)->get('/account')->assertSee('1 Main St')->assertSee('555-0100');
+
+        // An address line needs its city/postcode/country
+        $this->actingAs($user)->put('/account', ['name' => 'N', 'email' => 'new@example.com', 'address_line1' => '2 Side St', 'city' => ''])
+            ->assertSessionHasErrors(['city', 'postal_code', 'country']);
     }
 
     public function test_password_is_changed_only_through_an_emailed_link(): void

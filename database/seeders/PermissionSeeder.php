@@ -36,9 +36,8 @@ class PermissionSeeder extends Seeder
             'support' => ['Customer Support', 'Handles orders and the inbox.', [
                 'admin.access', 'orders.view', 'users.view', 'emails.inbox', 'emails.log',
             ]],
-            'marketing' => ['Marketing', 'Newsletters, templates and homepage sliders.', [
-                'admin.access', 'dashboard.view', 'products.view', 'emails.templates', 'emails.subscribers',
-                'emails.campaigns', 'settings.manage',
+            'marketing' => ['Marketing', 'Email templates and homepage sliders.', [
+                'admin.access', 'dashboard.view', 'products.view', 'emails.templates', 'settings.manage',
             ]],
         ];
 

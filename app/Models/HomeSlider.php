@@ -11,11 +11,11 @@ use Illuminate\Database\Eloquent\Model;
 class HomeSlider extends Model
 {
     public const SOURCES = [
-        'featured' => 'Featured products',
-        'new' => 'Newest products',
-        'sale' => 'On sale',
-        'department' => 'A department',
-        'category' => 'A category',
+        'featured' => 'Featured products (marked “Featured”)',
+        'new' => 'Newest products (latest added)',
+        'sale' => 'On-sale products (have a compare-at price)',
+        'department' => 'Products from one department…',
+        'category' => 'Products from one category…',
     ];
 
     protected function casts(): array

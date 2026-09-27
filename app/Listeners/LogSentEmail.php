@@ -20,7 +20,6 @@ class LogSentEmail
             'to' => $to,
             'subject' => (string) $message->getSubject(),
             'template_key' => $headers->get('X-Store-Template')?->getBodyAsString(),
-            'campaign_id' => $headers->get('X-Store-Campaign')?->getBodyAsString(),
             'message_id' => $messageId ?: null,
             'status' => 'sent',
             'status_at' => now(),

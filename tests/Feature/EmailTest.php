@@ -3,12 +3,10 @@
 namespace Tests\Feature;
 
 use App\Mail\StoreMail;
-use App\Models\Campaign;
 use App\Models\EmailLog;
 use App\Models\EmailTemplate;
 use App\Models\InboundMessage;
 use App\Models\Order;
-use App\Models\Subscriber;
 use App\Models\User;
 use App\Services\Emailer;
 use Database\Seeders\EmailTemplateSeeder;
@@ -26,19 +24,18 @@ class EmailTest extends TestCase
         $this->seed(EmailTemplateSeeder::class);
     }
 
-    public function test_sign_up_sends_welcome_and_can_subscribe(): void
+    public function test_sign_up_sends_welcome(): void
     {
         Mail::fake();
         $this->seedPermissions();
 
         $this->post('/register', [
             'name' => 'Jamie', 'email' => 'jamie@example.com', 'password' => 'secret-pass-123',
-            'password_confirmation' => 'secret-pass-123', 'terms' => '1', 'newsletter' => '1',
+            'password_confirmation' => 'secret-pass-123', 'terms' => '1',
         ]);
 
         Mail::assertSent(StoreMail::class, fn (StoreMail $m) => $m->hasTo('jamie@example.com') && $m->templateKey === 'welcome'
             && $m->mailSubject === 'Welcome to MyStore, Jamie!');
-        $this->assertDatabaseHas('subscribers', ['email' => 'jamie@example.com', 'status' => 'subscribed', 'source' => 'signup']);
     }
 
     public function test_edited_template_wording_is_used(): void
@@ -99,11 +96,10 @@ class EmailTest extends TestCase
         $this->assertDatabaseHas('email_logs', ['to' => 'pat@example.com', 'status' => 'failed']);
     }
 
-    public function test_mailgun_event_webhook_updates_log_and_unsubscribes_complaints(): void
+    public function test_mailgun_event_webhook_updates_log(): void
     {
         config(['services.mailgun.webhook_signing_key' => 'key-test']);
         $log = EmailLog::create(['to' => 'a@example.com', 'subject' => 'Hi', 'message_id' => 'abc123@mystore.test', 'status' => 'sent']);
-        Subscriber::subscribe('a@example.com');
 
         $payload = fn ($event, $sig = null) => [
             'signature' => $this->mailgunSignature('key-test', $sig),
@@ -118,7 +114,6 @@ class EmailTest extends TestCase
 
         $this->postJson('/webhooks/mailgun/events', $payload('complained'))->assertOk();
         $this->assertSame('complained', $log->fresh()->status);
-        $this->assertSame('unsubscribed', Subscriber::first()->status);
     }
 
     public function test_mailgun_inbound_creates_inbox_message(): void
@@ -161,63 +156,19 @@ class EmailTest extends TestCase
         $this->assertSame(1, $message->replies()->count());
     }
 
-    public function test_newsletter_signup_and_signed_unsubscribe(): void
-    {
-        Mail::fake();
-
-        $this->post('/newsletter', ['email' => 'Fan@Example.com'])->assertSessionHas('status');
-        $subscriber = Subscriber::firstOrFail();
-        $this->assertSame('fan@example.com', $subscriber->email);
-        Mail::assertSent(StoreMail::class, fn (StoreMail $m) => $m->templateKey === 'newsletter_welcome' && $m->unsubscribeUrl !== null);
-
-        $this->get("/newsletter/unsubscribe/{$subscriber->id}")->assertForbidden(); // unsigned
-        $this->get($subscriber->unsubscribeUrl())->assertOk()->assertSee('unsubscribed');
-        $this->assertSame('unsubscribed', $subscriber->fresh()->status);
-    }
-
-    public function test_campaign_sends_to_active_subscribers_once(): void
-    {
-        Mail::fake();
-        $admin = $this->superAdmin();
-        Subscriber::subscribe('one@example.com', 'One');
-        Subscriber::subscribe('two@example.com');
-        Subscriber::subscribe('gone@example.com');
-        Subscriber::where('email', 'gone@example.com')->first()->unsubscribe();
-
-        $this->actingAs($admin)->post('/admin/emails/campaigns', ['subject' => 'Summer sale', 'body' => 'Hi {{name}}, 20% off!'])->assertSessionHasNoErrors();
-        $campaign = Campaign::firstOrFail();
-
-        $this->actingAs($admin)->get("/admin/emails/campaigns/{$campaign->id}/edit")->assertOk()->assertSee('Send to 2 subscribers');
-
-        $this->actingAs($admin)->post("/admin/emails/campaigns/{$campaign->id}/send")->assertSessionHas('status');
-        $this->actingAs($admin)->post("/admin/emails/campaigns/{$campaign->id}/send")->assertSessionHas('error');
-
-        Mail::assertSent(StoreMail::class, 2);
-        Mail::assertSent(StoreMail::class, fn (StoreMail $m) => $m->hasTo('one@example.com') && str_contains($m->body, 'Hi One, 20% off!') && $m->unsubscribeUrl);
-        Mail::assertNotSent(StoreMail::class, fn (StoreMail $m) => $m->hasTo('gone@example.com'));
-
-        $campaign->refresh();
-        $this->assertSame('sent', $campaign->status);
-        $this->assertSame(2, $campaign->sent_count);
-
-        $this->actingAs($admin)->put("/admin/emails/campaigns/{$campaign->id}", ['subject' => 'Edit', 'body' => 'x'])->assertForbidden();
-    }
-
     public function test_email_admin_pages_render_and_are_permission_gated(): void
     {
         $admin = $this->superAdmin();
         $message = InboundMessage::create(['from_email' => 'x@example.com', 'body' => 'Hi']);
-        $campaign = Campaign::create(['subject' => 'S', 'body' => 'B']);
 
         foreach (['/admin/emails/inbox', "/admin/emails/inbox/{$message->id}", '/admin/emails/log', '/admin/emails/templates',
-            '/admin/emails/templates/welcome/edit', '/admin/emails/subscribers', '/admin/emails/subscribers/export',
-            '/admin/emails/campaigns', '/admin/emails/campaigns/create', "/admin/emails/campaigns/{$campaign->id}/edit"] as $page) {
+            '/admin/emails/templates/welcome/edit'] as $page) {
             $this->actingAs($admin)->get($page)->assertOk();
         }
 
         $support = $this->userWithPermissions(['admin.access', 'emails.inbox']);
         $this->actingAs($support)->get('/admin/emails/inbox')->assertOk();
-        $this->actingAs($support)->get('/admin/emails/campaigns')->assertForbidden();
+        $this->actingAs($support)->get('/admin/emails/log')->assertForbidden();
         $this->actingAs($support)->get('/admin/emails/templates')->assertForbidden();
     }
 

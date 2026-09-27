@@ -24,8 +24,6 @@ class StoreMail extends Mailable
         public ?string $buttonText = null,
         public ?string $buttonUrl = null,
         public ?string $templateKey = null,
-        public ?int $campaignId = null,
-        public ?string $unsubscribeUrl = null,
     ) {}
 
     public function envelope(): Envelope
@@ -40,9 +38,6 @@ class StoreMail extends Mailable
     {
         $text = array_filter([
             'X-Store-Template' => $this->templateKey,
-            'X-Store-Campaign' => $this->campaignId ? (string) $this->campaignId : null,
-            'List-Unsubscribe' => $this->unsubscribeUrl ? '<'.$this->unsubscribeUrl.'>' : null,
-            'List-Unsubscribe-Post' => $this->unsubscribeUrl ? 'List-Unsubscribe=One-Click' : null,
         ]);
 
         return new Headers(text: $text);

@@ -53,8 +53,6 @@ return [
         'Emails' => [
             'emails.templates' => 'Edit email templates',
             'emails.log' => 'View the outgoing email log',
-            'emails.subscribers' => 'Manage newsletter subscribers',
-            'emails.campaigns' => 'Create & send newsletter campaigns',
             'emails.inbox' => 'Read & reply to inbox messages',
         ],
     ],

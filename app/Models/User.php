@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'is_active'])]
+#[Fillable(['name', 'email', 'password', 'is_active', 'phone', 'address_line1', 'address_line2', 'city', 'state', 'postal_code', 'country'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -49,6 +49,11 @@ class User extends Authenticatable
             'reset_url' => $url,
             'expires_minutes' => config('auth.passwords.users.expire', 60),
         ], $url);
+    }
+
+    public function hasAddress(): bool
+    {
+        return filled($this->address_line1) && filled($this->city);
     }
 
     public function orders(): HasMany

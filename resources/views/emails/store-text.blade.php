@@ -6,6 +6,3 @@
 
 --
 {{ setting('store_name') }}
-@if ($unsubscribeUrl)
-Unsubscribe: {!! $unsubscribeUrl !!}
-@endif

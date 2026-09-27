@@ -22,8 +22,16 @@ class AccountController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'phone' => ['nullable', 'string', 'max:40'],
+            'address_line1' => ['nullable', 'required_with:city,postal_code', 'string', 'max:255'],
+            'address_line2' => ['nullable', 'string', 'max:255'],
+            'city' => ['nullable', 'required_with:address_line1', 'string', 'max:120'],
+            'state' => ['nullable', 'string', 'max:120'],
+            'postal_code' => ['nullable', 'required_with:address_line1', 'string', 'max:20'],
+            'country' => ['nullable', 'required_with:address_line1', 'string', 'size:2'],
         ]);
 
+        $data['country'] = isset($data['country']) ? strtoupper($data['country']) : null;
         $user->fill($data);
 
         if ($user->isDirty('email')) {
