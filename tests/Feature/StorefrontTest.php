@@ -22,7 +22,7 @@ class StorefrontTest extends TestCase
             ->assertSee('data-slider', false)
             ->assertSee('Slider Star')
             ->assertSee('images/logo.svg', false)
-            ->assertSee(route('cart.index'), false)
+            ->assertSee('Your cart')
             ->assertSee('&copy; '.date('Y').' MyStore', false);
     }
 

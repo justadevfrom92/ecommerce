@@ -8,30 +8,32 @@
 <a class="visually-hidden-focusable" href="#main">Skip to content</a>
 
 <header class="site-header">
-    {{-- Row 1: logo icon (home) · search · account + cart --}}
+    {{-- Row 1: logo icon (home) · search toggle, cart popup, account --}}
+    @php($searchOpen = request()->routeIs('search') && filled(request('q')))
     <div class="site-topbar">
-        <nav class="container-xxl d-flex flex-wrap align-items-center gap-2 gap-md-4 py-2" aria-label="Main">
+        <nav class="container-xxl d-flex align-items-center gap-2 py-2" aria-label="Main">
             <a href="{{ route('home') }}" class="site-logo flex-shrink-0" aria-label="{{ setting('store_name') }} home">
                 <img src="{{ asset('images/logo.svg') }}" alt="{{ setting('store_name') }}" width="36" height="36">
             </a>
 
-            <form action="{{ route('search') }}" method="GET" role="search" class="site-search order-last order-md-0 flex-grow-1 mx-md-auto">
-                <div class="search-pill">
-                    <i class="bi bi-search" aria-hidden="true"></i>
-                    <input type="search" name="q" class="form-control" placeholder="Search products" value="{{ request()->routeIs('search') ? request('q') : '' }}" aria-label="Search products">
-                </div>
-            </form>
-
-            <div class="d-flex align-items-center gap-1 ms-auto ms-md-0">
-                <a href="{{ route('cart.index') }}" class="nav-icon-btn position-relative" aria-label="Cart, {{ $cartCount }} items">
-                    <i class="bi bi-cart3"></i>
-                    @if ($cartCount > 0)
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill cart-badge">{{ $cartCount > 99 ? '99+' : $cartCount }}</span>
-                    @endif
-                </a>
+            <div class="d-flex align-items-center gap-1 ms-auto">
+                <button class="nav-icon-btn" type="button" data-bs-toggle="collapse" data-bs-target="#site-search" aria-controls="site-search" aria-expanded="{{ $searchOpen ? 'true' : 'false' }}" aria-label="Search">
+                    <i class="bi bi-search"></i>
+                </button>
+                @include('partials.cart-menu')
                 @include('partials.account-menu')
             </div>
         </nav>
+        <div class="collapse @if ($searchOpen) show @endif" id="site-search">
+            <div class="container-xxl pb-3">
+                <form action="{{ route('search') }}" method="GET" role="search" class="site-search mx-auto">
+                    <div class="search-pill">
+                        <i class="bi bi-search" aria-hidden="true"></i>
+                        <input type="search" name="q" class="form-control" placeholder="Search products" value="{{ request()->routeIs('search') ? request('q') : '' }}" aria-label="Search products">
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     {{-- Row 2: Category menu · page links --}}
@@ -86,13 +88,7 @@
     <div class="footer-columns">
         <div class="container-xxl py-5">
             <div class="row g-4">
-                <div class="col-lg-3">
-                    <a href="{{ route('home') }}" class="d-inline-block mb-3" aria-label="{{ setting('store_name') }} home">
-                        <img src="{{ asset('images/logo.svg') }}" alt="{{ setting('store_name') }}" width="36" height="36">
-                    </a>
-                    <p class="footer-blurb mb-0">Everything you need across {{ count($navDepartments) }} departments, with free shipping on orders over {{ money(setting('free_shipping_over')) }}.</p>
-                </div>
-                <div class="col-lg-9">
+                <div class="col-12">
                     <nav class="row row-cols-2 row-cols-md-3 row-cols-xl-5 g-4" aria-label="Footer">
                         @foreach ($navDepartments as $dept)
                             <div class="col">

@@ -36,7 +36,11 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(OrderStatusChanged::class, [SendStoreEmails::class, 'orderStatusChanged']);
 
         View::composer('components.layouts.store', function ($view) {
-            $view->with('cartCount', app(Cart::class)->count());
+            $cart = app(Cart::class);
+            $view->with('cartCount', $cart->count());
+            $lines = $cart->count() > 0 ? $cart->lines() : collect();
+            $view->with('cartLines', $lines);
+            $view->with('cartTotals', $cart->totals($lines));
             $view->with('navDepartments', Cache::remember('nav.departments', 600, fn () => Department::active()->orderBy('sort_order')->orderBy('name')
                 ->with(['categories' => fn ($q) => $q->where('is_active', true)->select(['id', 'department_id', 'name', 'slug'])])
                 ->get(['id', 'name', 'slug'])

@@ -97,6 +97,15 @@
         if (message && !window.confirm(message)) e.preventDefault();
     });
 
+    /* ---------- Search toggle: focus the field when it opens ---------- */
+    var searchPanel = document.getElementById('site-search');
+    if (searchPanel) {
+        searchPanel.addEventListener('shown.bs.collapse', function () {
+            var input = searchPanel.querySelector('input[name="q"]');
+            if (input) input.focus();
+        });
+    }
+
     /* ---------- Re-open the login popup when it has errors ---------- */
     var loginToggle = document.querySelector('[data-open-on-load]');
     if (loginToggle && window.bootstrap) {

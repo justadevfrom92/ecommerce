@@ -1,17 +1,5 @@
 <x-layouts.store>
     <div class="container-xxl pt-4">
-        {{-- Category tiles --}}
-        <nav class="cat-tiles mb-4" aria-label="Shop by category">
-            <a href="{{ route('search', ['on_sale' => 1]) }}" class="cat-tile is-deals">
-                <span class="cat-icon"><i class="bi bi-lightning-charge-fill"></i></span>Deals
-            </a>
-            @foreach ($tiles as $tile)
-                <a href="{{ $tile['url'] }}" class="cat-tile">
-                    <span class="cat-icon"><i class="bi bi-{{ $tile['icon'] }}"></i></span>{{ $tile['name'] }}
-                </a>
-            @endforeach
-        </nav>
-
         {{-- Promo banners --}}
         <section class="promo promo-hero mb-3" aria-label="Sale">
             <div class="promo-body">
@@ -53,7 +41,7 @@
             <x-product-slider :title="$slider['title']" :icon="$slider['icon']" :products="$slider['products']" :view-all="$slider['viewAll']" />
         @endforeach
 
-        {{-- Member / newsletter --}}
+        {{-- Member sign-up (guests) --}}
         @guest
             <section class="member-cta row align-items-center g-4 justify-content-center" aria-labelledby="member-title">
                 <div class="col-md-4 text-center text-md-end">
@@ -67,20 +55,5 @@
             </section>
         @endguest
 
-        <section class="panel panel-body d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mt-4" aria-labelledby="newsletter-title">
-            <div>
-                <h2 class="h5 fw-extrabold mb-1" id="newsletter-title">Get the newsletter</h2>
-                <p class="text-muted-2 mb-0">New arrivals and member-only offers. No spam; unsubscribe any time.</p>
-            </div>
-            <div style="min-width: min(26rem, 100%)">
-                <form method="POST" action="{{ route('newsletter.store') }}" class="d-flex gap-2">
-                    @csrf
-                    <label for="newsletter-email" class="visually-hidden">Email address</label>
-                    <input type="email" id="newsletter-email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="you@example.com" value="{{ auth()->user()?->email }}" required>
-                    <button class="btn btn-primary text-nowrap">Subscribe</button>
-                </form>
-                @error('email')<div class="small text-danger mt-1">{{ $message }}</div>@enderror
-            </div>
-        </section>
     </div>
 </x-layouts.store>

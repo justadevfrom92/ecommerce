@@ -180,6 +180,10 @@ a:hover { text-decoration: none; }
     font-size: .6rem; min-width: 1.05rem; height: 1.05rem; padding: 0 .3rem; margin-top: .35rem; margin-left: -.4rem;
     background: var(--ms-primary) !important; display: inline-flex; align-items: center; justify-content: center;
 }
+.cart-menu { width: min(23rem, calc(100vw - 32px)); border-color: var(--ms-line); border-radius: var(--ms-radius-lg); }
+.cart-menu-items { max-height: 20rem; overflow-y: auto; padding-block: .25rem; }
+.cart-menu-items li + li { border-top: 1px solid var(--ms-highlight); }
+#site-search .site-search { max-width: 40rem; }
 .account-menu { width: 19rem; border-color: var(--ms-line); border-radius: var(--ms-radius-lg); }
 
 .site-navbar { background: var(--ms-panel); border-bottom: 1px solid var(--ms-line); }
@@ -199,7 +203,6 @@ a:hover { text-decoration: none; }
 /* ---------- Footer: large department columns, copyright bottom left ---------- */
 .site-footer { background: var(--ms-page); }
 .footer-columns { background: var(--ms-highlight); border-top: 1px solid var(--ms-line); }
-.footer-blurb { color: var(--ms-text-2); font-size: .85rem; max-width: 22rem; }
 .footer-heading { font-size: .95rem; font-weight: 800; margin-bottom: .75rem; }
 .footer-heading a { color: var(--ms-heading); }
 .footer-heading a:hover { color: var(--ms-primary); }
