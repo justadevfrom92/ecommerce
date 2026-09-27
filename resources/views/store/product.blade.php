@@ -5,9 +5,9 @@
             <div class="col-lg-6">
                 <div class="pd-gallery mb-3">
                     <div class="pd-thumbs d-flex flex-column gap-2">
-                        <span class="pd-thumb active"><img src="{{ $product->imageUrl() }}" alt=""></span>
+                        <span class="pd-thumb active" style="--tint: {{ $product->tint() }}"><img src="{{ $product->imageUrl() }}" alt=""></span>
                     </div>
-                    <div class="pd-main"><img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}"></div>
+                    <div class="pd-main" style="--tint: {{ $product->tint() }}"><img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}"></div>
                 </div>
             </div>
 

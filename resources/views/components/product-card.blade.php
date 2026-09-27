@@ -1,7 +1,7 @@
 {{-- Product tile: one white card — image, two-line title, category/stock, price, Add + Quick pay. --}}
 @props(['product'])
 <article {{ $attributes->class('product-card') }}>
-    <a href="{{ route('products.show', $product) }}" class="product-card-image" tabindex="-1" aria-hidden="true">
+    <a href="{{ route('products.show', $product) }}" class="product-card-image" style="--tint: {{ $product->tint() }}" tabindex="-1" aria-hidden="true">
         <img src="{{ $product->imageUrl() }}" alt="" loading="lazy">
         @if ($product->isOnSale())
             <span class="pc-flag pill pill-danger">{{ round((1 - $product->price / $product->compare_at_price) * 100) }}% off</span>
@@ -22,7 +22,7 @@
             @endif
         </div>
         <div class="pc-price">
-            <span class="price-now">{{ money($product->price) }}</span>
+            <span @class(['price-now', 'is-sale' => $product->isOnSale()])>{{ money($product->price) }}</span>
             @if ($product->isOnSale())
                 <span class="price-old">{{ money($product->compare_at_price) }}</span>
             @endif

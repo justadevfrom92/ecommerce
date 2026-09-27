@@ -70,6 +70,14 @@ class Product extends Model
             : asset('images/placeholder.svg');
     }
 
+    /** Soft background colour for the product image, stable per category. */
+    public function tint(): string
+    {
+        $tints = ['#eef3ff', '#fff3e6', '#eaf8f1', '#fdeef4', '#f1efff', '#e9f7fb', '#fff8e1', '#f3f4f8'];
+
+        return $tints[($this->category_id ?? 0) % count($tints)];
+    }
+
     public function isOnSale(): bool
     {
         return $this->compare_at_price !== null && (float) $this->compare_at_price > (float) $this->price;

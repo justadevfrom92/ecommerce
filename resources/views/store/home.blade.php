@@ -3,34 +3,37 @@
         {{-- Promo banners --}}
         <section class="promo promo-hero mb-3" aria-label="Sale">
             <div class="promo-body">
+                <span class="promo-eyebrow">Limited time</span>
                 <h2>
                     @if ($maxDiscount > 0) <span class="hl">Up to {{ $maxDiscount }}% off</span> @else <span class="hl">New arrivals</span> @endif
                 </h2>
                 <p>on everyday items</p>
-                <a href="{{ route('search', ['on_sale' => 1]) }}" class="btn btn-primary">Shop now</a>
+                <a href="{{ route('search', ['on_sale' => 1]) }}" class="btn btn-light">Shop the sale</a>
             </div>
-            <i class="bi bi-speaker promo-art" aria-hidden="true"></i>
+            <span class="promo-shapes" aria-hidden="true"><span></span><span></span><span></span></span>
         </section>
         <div class="row g-3 mb-5">
             <div class="col-md-6">
                 <section class="promo promo-gift h-100" aria-label="Free shipping">
                     <div class="promo-body">
+                        <span class="promo-eyebrow">Every day</span>
                         <h2>Get <span class="hl">free shipping</span></h2>
                         <p>on orders over {{ money(setting('free_shipping_over')) }}</p>
-                        <a href="{{ route('search') }}" class="btn btn-primary">Buy now</a>
+                        <a href="{{ route('search') }}" class="btn btn-light">Start shopping</a>
                     </div>
-                    <i class="bi bi-gift promo-art" aria-hidden="true"></i>
+            <span class="promo-shapes" aria-hidden="true"><span></span><span></span><span></span></span>
                 </section>
             </div>
             @if ($spotlight)
                 <div class="col-md-6">
                     <section class="promo promo-blue h-100" aria-label="{{ $spotlight->name }}">
                         <div class="promo-body">
+                            <span class="promo-eyebrow">Spotlight</span>
                             <h2>{{ $spotlight->name }}</h2>
                             <p>Best in the market</p>
-                            <a href="{{ route('departments.show', $spotlight) }}" class="btn btn-primary">Buy now</a>
+                            <a href="{{ route('departments.show', $spotlight) }}" class="btn btn-light">Explore {{ $spotlight->name }}</a>
                         </div>
-                        <i class="bi bi-phone promo-art" aria-hidden="true"></i>
+            <span class="promo-shapes" aria-hidden="true"><span></span><span></span><span></span></span>
                     </section>
                 </div>
             @endif
