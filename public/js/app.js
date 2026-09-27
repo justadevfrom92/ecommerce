@@ -22,8 +22,9 @@
 
         function update() {
             placeButtons();
-            var max = track.scrollWidth - track.clientWidth - 2;
-            prev.disabled = track.scrollLeft <= 2;
+            // A few px of tolerance: scroll-snap and sub-pixel widths rarely land on exact 0 / max.
+            var max = track.scrollWidth - track.clientWidth - 8;
+            prev.disabled = track.scrollLeft <= 8;
             next.disabled = track.scrollLeft >= max;
             slider.toggleAttribute('data-slider-static', max <= 0);
         }

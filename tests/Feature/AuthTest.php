@@ -80,7 +80,7 @@ class AuthTest extends TestCase
     public function test_account_menu_shows_login_form_for_guests(): void
     {
         $this->get('/')->assertOk()
-            ->assertSee('Sign in to your account')
+            ->assertSee('nav-password', false)
             ->assertSee('Create an account');
     }
 

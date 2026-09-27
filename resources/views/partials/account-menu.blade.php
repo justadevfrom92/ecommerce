@@ -9,8 +9,6 @@
         @guest
             <form method="POST" action="{{ route('login') }}" class="p-3">
                 @csrf
-                <h6 class="fw-extrabold mb-1">Sign in to your account</h6>
-                <p class="small text-muted-2 mb-3">Get access to your orders and faster checkout.</p>
                 @if ($loginErrors->any())
                     <div class="alert alert-danger py-2 small">{{ $loginErrors->first() }}</div>
                 @endif
