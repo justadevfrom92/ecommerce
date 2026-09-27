@@ -31,7 +31,7 @@ class HomeSlider extends Model
     /** @return Collection<int, Product> */
     public function products(): Collection
     {
-        $query = Product::query()->active()->with('category');
+        $query = Product::query()->active()->inStock()->with('category');
 
         match ($this->source) {
             'featured' => $query->where('is_featured', true)->latest(),

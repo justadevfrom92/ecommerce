@@ -16,7 +16,7 @@ class CartController extends Controller
     {
         $lines = $this->cart->lines();
 
-        $suggestions = Product::active()->with('category')
+        $suggestions = Product::active()->inStock()->with('category')
             ->where('is_featured', true)
             ->whereNotIn('id', $lines->pluck('product.id'))
             ->inRandomOrder()->limit(12)->get();
@@ -44,6 +44,25 @@ class CartController extends Controller
         $this->cart->add($product, $data['quantity'] ?? 1);
 
         return back()->with('status', "{$product->name} added to your cart.");
+    }
+
+    /** "Quick pay": put the item in the cart and go straight to checkout. */
+    public function buyNow(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'product_id' => ['required', 'integer', 'exists:products,id'],
+            'quantity' => ['nullable', 'integer', 'min:1', 'max:99'],
+        ]);
+
+        $product = Product::active()->findOrFail($data['product_id']);
+
+        if (! $product->inStock()) {
+            return back()->with('error', "Sorry, {$product->name} is out of stock.");
+        }
+
+        $this->cart->add($product, $data['quantity'] ?? 1);
+
+        return redirect()->route('checkout.create');
     }
 
     public function update(Request $request, Product $product): RedirectResponse

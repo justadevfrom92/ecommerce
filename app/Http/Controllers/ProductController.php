@@ -13,12 +13,12 @@ class ProductController extends Controller
 
         $product->load('category.department');
 
-        $related = Product::active()->with('category')
+        $related = Product::active()->inStock()->with('category')
             ->where('category_id', $product->category_id)
             ->whereKeyNot($product->id)
             ->inRandomOrder()->limit(12)->get();
 
-        $departmentPicks = Product::active()->with('category')
+        $departmentPicks = Product::active()->inStock()->with('category')
             ->whereHas('category', fn ($q) => $q->where('department_id', $product->category->department_id)->where('id', '!=', $product->category_id))
             ->where('is_featured', true)
             ->latest()->limit(12)->get();

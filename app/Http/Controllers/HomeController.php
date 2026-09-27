@@ -14,7 +14,6 @@ class HomeController extends Controller
         $sliders = HomeSlider::active()->get()
             ->map(fn (HomeSlider $slider) => [
                 'title' => $slider->title,
-                'icon' => $slider->source === 'sale' ? 'lightning-charge-fill' : null,
                 'products' => $slider->products(),
                 'viewAll' => $slider->viewAllUrl(),
             ]);

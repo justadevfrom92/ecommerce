@@ -30,6 +30,7 @@ Route::get('/products/{product}', [ProductController::class, 'show'])->name('pro
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+Route::post('/cart/buy-now', [CartController::class, 'buyNow'])->name('cart.buy-now');
 Route::patch('/cart/{product}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/{product}', [CartController::class, 'destroy'])->name('cart.destroy');
 

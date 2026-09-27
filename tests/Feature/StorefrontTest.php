@@ -15,12 +15,15 @@ class StorefrontTest extends TestCase
     public function test_home_shows_sliders_logo_cart_and_footer(): void
     {
         $category = Category::factory()->create();
-        Product::factory()->featured()->create(['category_id' => $category->id, 'name' => 'Slider Star']);
+        Product::factory()->featured()->create(['category_id' => $category->id, 'name' => 'Slider Star', 'stock' => 10]);
+        Product::factory()->featured()->outOfStock()->create(['category_id' => $category->id, 'name' => 'Sold Out Star']);
         $this->seed(SettingsSeeder::class);
 
         $this->get('/')->assertOk()
             ->assertSee('data-slider', false)
             ->assertSee('Slider Star')
+            ->assertDontSee('Sold Out Star')
+            ->assertSee('Quick pay')
             ->assertSee('images/logo.svg', false)
             ->assertSee('Your cart')
             ->assertSee('&copy; '.date('Y').' MyStore', false);
@@ -75,5 +78,16 @@ class StorefrontTest extends TestCase
 
         $this->post('/cart', ['product_id' => $product->id])->assertSessionHas('error');
         $this->assertEmpty(session('cart', []));
+    }
+
+    public function test_quick_pay_adds_to_cart_and_goes_to_checkout(): void
+    {
+        $product = Product::factory()->create(['stock' => 5]);
+
+        $this->post('/cart/buy-now', ['product_id' => $product->id])->assertRedirect(route('checkout.create'));
+        $this->assertSame([$product->id => 1], session('cart'));
+
+        $soldOut = Product::factory()->outOfStock()->create();
+        $this->post('/cart/buy-now', ['product_id' => $soldOut->id])->assertSessionHas('error');
     }
 }

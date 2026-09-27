@@ -20,7 +20,7 @@
 
             <div class="col-lg-6">
                 <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
-                    @if ($product->is_featured)<span class="pill pill-success">Featured <i class="bi bi-check-lg"></i></span>@endif
+                    @if ($product->is_featured && $product->inStock())<span class="pill pill-success">Featured <i class="bi bi-check-lg"></i></span>@endif
                     <a href="{{ route('categories.show', $product->category) }}" class="small fw-bold">{{ $product->category->name }}</a>
                 </div>
                 <h1 class="pd-title mb-3">{{ $product->name }}</h1>
@@ -60,10 +60,10 @@
                         </div>
                         <div class="row g-3" style="max-width: 32rem">
                             <div class="col-sm-6">
-                                <a href="{{ route('categories.show', $product->category) }}" class="btn btn-lg btn-outline-primary w-100 rounded-pill"><i class="bi bi-grid me-2"></i>More like this</a>
+                                <button type="submit" class="btn btn-lg btn-outline-primary w-100 rounded-pill"><i class="bi bi-cart-plus me-2"></i>Add to cart</button>
                             </div>
                             <div class="col-sm-6">
-                                <button type="submit" class="btn btn-lg btn-primary w-100 rounded-pill"><i class="bi bi-cart-plus me-2"></i>Add to cart</button>
+                                <button type="submit" formaction="{{ route('cart.buy-now') }}" class="btn btn-lg btn-primary w-100 rounded-pill">Quick pay</button>
                             </div>
                         </div>
                     </form>

@@ -2,17 +2,13 @@
     Horizontal product slider (CSS scroll-snap + public/js/app.js, no library).
     <x-product-slider title="Electronics" :products="$products" :view-all="route('departments.show', $dept)" />
 --}}
-@props(['title', 'products', 'viewAll' => null, 'subtitle' => null, 'icon' => null])
+@props(['title', 'products', 'viewAll' => null, 'subtitle' => null])
 @if ($products->isNotEmpty())
     @php($id = 'slider-'.\Illuminate\Support\Str::slug($title).'-'.\Illuminate\Support\Str::random(4))
     <section {{ $attributes->class('product-slider') }} data-slider aria-labelledby="{{ $id }}-title">
         <div class="slider-head">
             <div>
-                <h2 class="section-title" id="{{ $id }}-title">
-                    @if ($icon)<i class="bi bi-{{ $icon }} text-warning"></i>@endif
-                    {{ $title }}
-                    @if ($icon)<i class="bi bi-{{ $icon }} text-warning"></i>@endif
-                </h2>
+                <h2 class="section-title" id="{{ $id }}-title">{{ $title }}</h2>
                 @if ($subtitle)
                     <p class="text-muted-2 mb-0 small fw-semibold">{{ $subtitle }}</p>
                 @endif

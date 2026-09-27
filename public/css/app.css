@@ -262,6 +262,8 @@ a:hover { text-decoration: none; }
 .product-card .pc-title a:hover { color: var(--ms-primary); }
 .product-card .pc-meta { font-size: .75rem; color: var(--ms-muted); font-weight: 600; }
 .product-card .pc-note { font-size: .78rem; font-weight: 700; color: var(--ms-text-2); }
+.product-card .pc-actions { display: grid; grid-template-columns: auto 1fr; gap: .4rem; margin-top: .65rem; position: relative; z-index: 1; }
+.product-card .pc-actions .btn { padding: .3rem .5rem; font-size: .75rem; white-space: nowrap; }
 .product-card .pc-status { margin-top: auto; padding-top: .5rem; min-height: 1.6rem; line-height: 1.1; }
 .product-card .pc-price { padding-top: .1rem; display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap; }
 .price-old { color: var(--ms-text-2); text-decoration: line-through; font-size: .9rem; }
@@ -284,6 +286,9 @@ a:hover { text-decoration: none; }
     scroll-padding-inline: .25rem; /* snap the first card to scroll position 0, so "at start" is detected */
 }
 .slider-track::-webkit-scrollbar { display: none; }
+.slider-track { cursor: grab; touch-action: pan-x pan-y; }
+.slider-track.is-dragging { cursor: grabbing; scroll-snap-type: none; scroll-behavior: auto; user-select: none; }
+.slider-track img { -webkit-user-drag: none; user-select: none; }
 .slider-item { flex: 0 0 calc((100% - (var(--slider-per-view) - 1) * var(--slider-gap)) / var(--slider-per-view)); scroll-snap-align: start; min-width: 0; }
 .slider-btn {
     position: absolute; top: var(--slider-btn-top, 34%); transform: translateY(-50%); z-index: 2; width: 2.25rem; height: 2.25rem; border-radius: 50%;

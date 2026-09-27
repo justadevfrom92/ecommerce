@@ -39,6 +39,36 @@
             if (e.key === 'ArrowRight') { e.preventDefault(); page(1); }
             if (e.key === 'ArrowLeft') { e.preventDefault(); page(-1); }
         });
+        // Mouse drag = swipe. Touch and trackpads already swipe natively via overflow scrolling.
+        var drag = null;
+        track.addEventListener('pointerdown', function (e) {
+            if (e.pointerType !== 'mouse' || e.button !== 0) return;
+            drag = { x: e.clientX, left: track.scrollLeft, moved: false };
+        });
+        track.addEventListener('pointermove', function (e) {
+            if (!drag) return;
+            var dx = e.clientX - drag.x;
+            if (!drag.moved && Math.abs(dx) > 5) {
+                drag.moved = true;
+                track.classList.add('is-dragging');
+                track.setPointerCapture(e.pointerId);
+            }
+            if (drag.moved) track.scrollLeft = drag.left - dx;
+        });
+        function endDrag(e) {
+            if (!drag) return;
+            var moved = drag.moved;
+            drag = null;
+            track.classList.remove('is-dragging'); // re-enables snapping, which settles on the nearest card
+            if (moved) {
+                // Swallow the click that follows a drag so it doesn't open a product.
+                track.addEventListener('click', function stop(ev) { ev.preventDefault(); ev.stopPropagation(); }, { capture: true, once: true });
+            }
+        }
+        track.addEventListener('pointerup', endDrag);
+        track.addEventListener('pointercancel', endDrag);
+        track.addEventListener('dragstart', function (e) { e.preventDefault(); });
+
         track.addEventListener('scroll', update, { passive: true });
         window.addEventListener('resize', update);
         update();

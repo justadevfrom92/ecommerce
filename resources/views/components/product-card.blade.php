@@ -5,7 +5,7 @@
         <img src="{{ $product->imageUrl() }}" alt="" loading="lazy">
         @if ($product->isOnSale())
             <span class="pc-flag pill pill-danger">{{ round((1 - $product->price / $product->compare_at_price) * 100) }}% off</span>
-        @elseif ($product->is_featured)
+        @elseif ($product->is_featured && $product->inStock())
             <span class="pc-flag pill pill-success">Featured <i class="bi bi-check-lg"></i></span>
         @endif
     </a>
@@ -28,5 +28,13 @@
             @endif
             <span class="price-now">{{ money($product->price) }}</span>
         </div>
+        @if ($product->inStock())
+            <form method="POST" action="{{ route('cart.store') }}" class="pc-actions">
+                @csrf
+                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                <button type="submit" class="btn btn-outline-primary btn-sm" aria-label="Add {{ $product->name }} to cart"><i class="bi bi-cart-plus"></i><span class="ms-1">Add</span></button>
+                <button type="submit" formaction="{{ route('cart.buy-now') }}" class="btn btn-primary btn-sm" aria-label="Quick pay for {{ $product->name }}">Quick pay</button>
+            </form>
+        @endif
     </div>
 </article>

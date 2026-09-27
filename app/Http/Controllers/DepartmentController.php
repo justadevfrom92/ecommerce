@@ -17,10 +17,10 @@ class DepartmentController extends Controller
         // One slider per category, newest first.
         $sliders = $categories->map(fn ($category) => [
             'category' => $category,
-            'products' => $category->products()->active()->with('category')->latest()->limit(12)->get(),
+            'products' => $category->products()->active()->inStock()->with('category')->latest()->limit(12)->get(),
         ])->filter(fn ($s) => $s['products']->isNotEmpty());
 
-        $featured = Product::active()->with('category')
+        $featured = Product::active()->inStock()->with('category')
             ->whereIn('category_id', $categories->pluck('id'))
             ->where('is_featured', true)
             ->latest()->limit(12)->get();

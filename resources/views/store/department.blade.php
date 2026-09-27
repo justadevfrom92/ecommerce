@@ -12,7 +12,7 @@
         @endif
 
 
-        <x-product-slider :title="'Top deals in '.$department->name" icon="lightning-charge-fill" :products="$featured" />
+        <x-product-slider :title="'Top deals in '.$department->name" :products="$featured" />
 
         @foreach ($sliders as $slider)
             <x-product-slider :title="'Top '.$slider['category']->name" :products="$slider['products']" :view-all="route('categories.show', $slider['category'])" />

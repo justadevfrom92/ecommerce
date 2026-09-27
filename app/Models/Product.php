@@ -40,6 +40,12 @@ class Product extends Model
         $query->where('is_active', true);
     }
 
+    /** Sliders only ever show products a shopper can actually buy. */
+    public function scopeInStock(Builder $query): void
+    {
+        $query->where('stock', '>', 0);
+    }
+
     public function scopeSearch(Builder $query, ?string $term): void
     {
         $term = trim((string) $term);
