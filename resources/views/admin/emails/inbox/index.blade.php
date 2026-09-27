@@ -22,7 +22,7 @@
         @foreach ($messages as $message)
             <tr class="{{ $message->isUnread() ? 'fw-semibold' : '' }}">
                 <td>
-                    @if ($message->isUnread())<span class="badge rounded-pill text-bg-primary me-1" title="Unread">&nbsp;</span><span class="visually-hidden">Unread:</span>@endif
+                    @if ($message->isUnread())<span class="d-inline-block rounded-circle me-1" style="width:.5rem;height:.5rem;background:var(--ms-primary)" title="Unread"></span><span class="visually-hidden">Unread:</span>@endif
                     {{ $message->from_name ?: $message->from_email }}
                     @if ($message->from_name)<div class="small text-body-secondary fw-normal">{{ $message->from_email }}</div>@endif
                 </td>
@@ -32,7 +32,7 @@
                 </td>
                 <td class="small fw-normal">{{ $message->source === 'contact' ? 'Contact form' : 'Email' }} @if ($message->replies_count)<i class="bi bi-reply-fill text-success" title="Replied"></i>@endif</td>
                 <td class="small text-body-secondary fw-normal text-nowrap">{{ $message->created_at->diffForHumans() }}</td>
-                <td class="text-end"><a href="{{ route('admin.emails.inbox.show', $message) }}" class="btn btn-sm btn-outline-secondary">Open</a></td>
+                <td class="text-end"><a href="{{ route('admin.emails.inbox.show', $message) }}" class="btn btn-sm btn-soft">Open</a></td>
             </tr>
         @endforeach
     </x-data-table>

@@ -13,7 +13,7 @@
         @foreach ($campaigns as $campaign)
             <tr>
                 <td><div class="fw-semibold">{{ $campaign->subject }}</div><div class="small text-body-secondary">by {{ $campaign->author?->name ?? 'deleted user' }}</div></td>
-                <td><span class="badge {{ \App\Models\Campaign::STATUSES[$campaign->status] ?? 'text-bg-light' }} status-badge">{{ $campaign->status }}</span></td>
+                <td><span class="{{ \App\Models\Campaign::STATUSES[$campaign->status] ?? 'pill pill-neutral' }}">{{ $campaign->status }}</span></td>
                 <td class="text-end small">
                     @if ($campaign->isDraft()) — @else
                         {{ number_format($campaign->sent_count) }} / {{ number_format($campaign->recipients_count) }}
@@ -23,7 +23,7 @@
                 <td class="small text-body-secondary">{{ $campaign->sent_at?->format('M j, Y g:i A') ?? '—' }}</td>
                 <td class="small text-body-secondary">{{ $campaign->created_at->format('M j, Y') }}</td>
                 <td class="text-end text-nowrap">
-                    <a href="{{ route('admin.emails.campaigns.edit', $campaign) }}" class="btn btn-sm btn-outline-secondary">{{ $campaign->isDraft() ? 'Edit' : 'View' }}</a>
+                    <a href="{{ route('admin.emails.campaigns.edit', $campaign) }}" class="btn btn-sm btn-soft">{{ $campaign->isDraft() ? 'Edit' : 'View' }}</a>
                     @if ($campaign->status !== 'sending')
                         <x-delete-button :action="route('admin.emails.campaigns.destroy', $campaign)" icon-only :label="'Delete '.$campaign->subject" confirm="Delete this campaign?" />
                     @endif

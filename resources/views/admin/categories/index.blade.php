@@ -30,9 +30,9 @@
                     @endcan
                 </td>
                 <td class="text-end">{{ $category->sort_order }}</td>
-                <td><span class="badge {{ $category->is_active ? 'text-bg-success' : 'text-bg-secondary' }}">{{ $category->is_active ? 'Active' : 'Hidden' }}</span></td>
+                <td><span class="{{ $category->is_active ? 'pill pill-success' : 'pill pill-neutral' }}">{{ $category->is_active ? 'Active' : 'Hidden' }}</span></td>
                 <td class="text-end text-nowrap">
-                    <a href="{{ route('admin.categories.edit', $category) }}" class="btn btn-sm btn-outline-secondary" aria-label="Edit {{ $category->name }}"><i class="bi bi-pencil"></i></a>
+                    <a href="{{ route('admin.categories.edit', $category) }}" class="btn btn-sm btn-soft" aria-label="Edit {{ $category->name }}"><i class="bi bi-pencil"></i></a>
                     <x-delete-button :action="route('admin.categories.destroy', $category)" icon-only :label="'Delete '.$category->name" :confirm="'Delete '.$category->name.'?'" />
                 </td>
             </tr>

@@ -11,7 +11,7 @@
                 <td><div class="fw-semibold">{{ $template->name }}</div><div class="small text-body-secondary">{{ $template->description }}</div></td>
                 <td class="small">{{ $template->subject }}</td>
                 <td class="small text-body-secondary">{{ $template->updated_at->diffForHumans() }}</td>
-                <td class="text-end"><a href="{{ route('admin.emails.templates.edit', $template) }}" class="btn btn-sm btn-outline-secondary">Edit</a></td>
+                <td class="text-end"><a href="{{ route('admin.emails.templates.edit', $template) }}" class="btn btn-sm btn-soft">Edit</a></td>
             </tr>
         @endforeach
     </x-data-table>

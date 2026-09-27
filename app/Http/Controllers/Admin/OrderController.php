@@ -34,7 +34,9 @@ class OrderController extends Controller
             defaultSort: 'created_at',
         );
 
-        return view('admin.orders.index', compact('orders'));
+        $counts = Order::query()->selectRaw('status, COUNT(*) as n')->groupBy('status')->pluck('n', 'status');
+
+        return view('admin.orders.index', compact('orders', 'counts'));
     }
 
     public function show(Order $order): View

@@ -1,6 +1,6 @@
 <x-layouts.admin title="Newsletter subscribers">
     <x-slot:actions>
-        <a href="{{ route('admin.emails.subscribers.export') }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-download me-1"></i>Export CSV</a>
+        <a href="{{ route('admin.emails.subscribers.export') }}" class="btn btn-sm btn-soft"><i class="bi bi-download me-1"></i>Export CSV</a>
     </x-slot:actions>
 
     <div class="row g-4">
@@ -25,12 +25,12 @@
                         <td class="small">{{ $subscriber->email }}</td>
                         <td class="small">{{ $subscriber->name ?? '—' }}</td>
                         <td class="small text-body-secondary">{{ ucfirst($subscriber->source ?? '—') }}</td>
-                        <td><span class="badge {{ $subscriber->status === 'subscribed' ? 'text-bg-success' : 'text-bg-secondary' }} status-badge">{{ $subscriber->status }}</span></td>
+                        <td><span class="{{ $subscriber->status === 'subscribed' ? 'pill pill-success' : 'pill pill-neutral' }}">{{ $subscriber->status }}</span></td>
                         <td class="small text-body-secondary">{{ $subscriber->subscribed_at?->format('M j, Y') ?? '—' }}</td>
                         <td class="text-end text-nowrap">
                             <form method="POST" action="{{ route('admin.emails.subscribers.update', $subscriber) }}" class="d-inline">
                                 @csrf @method('PATCH')
-                                <button class="btn btn-sm btn-outline-secondary">{{ $subscriber->status === 'subscribed' ? 'Unsubscribe' : 'Resubscribe' }}</button>
+                                <button class="btn btn-sm btn-soft">{{ $subscriber->status === 'subscribed' ? 'Unsubscribe' : 'Resubscribe' }}</button>
                             </form>
                             <x-delete-button :action="route('admin.emails.subscribers.destroy', $subscriber)" icon-only :label="'Remove '.$subscriber->email" :confirm="'Remove '.$subscriber->email.' completely?'" />
                         </td>

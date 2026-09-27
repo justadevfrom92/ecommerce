@@ -37,7 +37,11 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('components.layouts.store', function ($view) {
             $view->with('cartCount', app(Cart::class)->count());
-            $view->with('navDepartments', Cache::remember('nav.departments', 600, fn () => Department::active()->orderBy('sort_order')->orderBy('name')->get(['name', 'slug'])->toArray()));
+            $view->with('navDepartments', Cache::remember('nav.departments', 600, fn () => Department::active()->orderBy('sort_order')->orderBy('name')
+                ->with(['categories' => fn ($q) => $q->where('is_active', true)->select(['id', 'department_id', 'name', 'slug'])])
+                ->get(['id', 'name', 'slug'])
+                ->map(fn ($d) => ['name' => $d->name, 'slug' => $d->slug, 'categories' => $d->categories->map->only(['name', 'slug'])->all()])
+                ->all()));
         });
     }
 }

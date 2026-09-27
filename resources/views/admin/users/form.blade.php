@@ -34,7 +34,7 @@
                         @foreach ($orders as $order)
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 @can('orders.view')<a href="{{ route('admin.orders.show', $order) }}">{{ $order->number }}</a>@else {{ $order->number }} @endcan
-                                <span class="badge {{ $order->statusBadge() }}">{{ $order->statusLabel() }}</span>
+                                {{ $order->statusPill() }}
                                 <span>{{ money($order->total) }}</span>
                             </li>
                         @endforeach
@@ -53,7 +53,7 @@
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="checkbox" name="roles[]" value="{{ $role->id }}" id="role-{{ $role->id }}" @checked(in_array($role->id, $checkedRoles, true))>
                             <label class="form-check-label" for="role-{{ $role->id }}">
-                                {{ $role->name }} @if ($role->is_super)<span class="badge text-bg-dark">Super</span>@endif
+                                {{ $role->name }} @if ($role->is_super)<span class="pill pill-dark">Super</span>@endif
                                 @if ($role->description)<span class="d-block small text-body-secondary">{{ $role->description }}</span>@endif
                             </label>
                         </div>

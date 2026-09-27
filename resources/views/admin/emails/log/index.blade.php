@@ -38,7 +38,7 @@
                     @endif
                 </td>
                 <td>
-                    <span class="badge {{ $log->badge() }} status-badge">{{ $log->status }}</span>
+                    <span class="{{ $log->badge() }}">{{ $log->status }}</span>
                     @if ($log->error)<div class="small text-danger text-truncate" style="max-width: 18rem" title="{{ $log->error }}">{{ $log->error }}</div>@endif
                 </td>
             </tr>

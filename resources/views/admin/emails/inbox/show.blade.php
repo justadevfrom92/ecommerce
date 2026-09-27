@@ -2,7 +2,7 @@
     <x-slot:actions>
         <form method="POST" action="{{ route('admin.emails.inbox.unread', $message) }}">
             @csrf
-            <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-envelope me-1"></i>Mark unread</button>
+            <button class="btn btn-sm btn-soft"><i class="bi bi-envelope me-1"></i>Mark unread</button>
         </form>
         <x-delete-button :action="route('admin.emails.inbox.destroy', $message)" confirm="Delete this message and its replies?" />
     </x-slot:actions>
@@ -15,7 +15,7 @@
                         <span class="fw-semibold">{{ $message->from_name ?: $message->from_email }}</span>
                         <span class="small text-body-secondary">&lt;{{ $message->from_email }}&gt;</span>
                         @if ($message->user && auth()->user()->can('users.manage'))
-                            <a href="{{ route('admin.users.edit', $message->user) }}" class="badge text-bg-light border ms-1">Customer</a>
+                            <a href="{{ route('admin.users.edit', $message->user) }}" class="pill pill-neutral ms-1">Customer</a>
                         @endif
                     </div>
                     <span class="small text-body-secondary">{{ $message->created_at->format('M j, Y g:i A') }} · {{ $message->source === 'contact' ? 'Contact form' : 'Email' }}</span>

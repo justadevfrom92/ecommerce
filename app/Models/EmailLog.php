@@ -10,13 +10,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class EmailLog extends Model
 {
     public const STATUSES = [
-        'sent' => 'text-bg-light border',
-        'delivered' => 'text-bg-success',
-        'opened' => 'text-bg-info',
-        'clicked' => 'text-bg-primary',
-        'failed' => 'text-bg-danger',
-        'bounced' => 'text-bg-danger',
-        'complained' => 'text-bg-warning',
+        'sent' => 'pill pill-neutral',
+        'delivered' => 'pill pill-success',
+        'opened' => 'pill pill-info',
+        'clicked' => 'pill pill-primary',
+        'failed' => 'pill pill-danger',
+        'bounced' => 'pill pill-danger',
+        'complained' => 'pill pill-warning',
     ];
 
     protected function casts(): array
@@ -31,6 +31,6 @@ class EmailLog extends Model
 
     public function badge(): string
     {
-        return self::STATUSES[$this->status] ?? 'text-bg-light';
+        return self::STATUSES[$this->status] ?? 'pill pill-neutral';
     }
 }

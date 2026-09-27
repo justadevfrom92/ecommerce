@@ -1,26 +1,26 @@
+@php
+    $links = ['All departments' => [request()->fullUrlWithQuery(['department' => null, 'page' => null]), ! $activeDepartment]];
+    foreach ($departments as $dept) {
+        $links[$dept->name] = [request()->fullUrlWithQuery(['department' => $dept->slug, 'page' => null]), (bool) $activeDepartment?->is($dept)];
+    }
+@endphp
 <x-layouts.store :title="$term !== '' ? 'Search: '.$term : 'Shop all'">
-    <div class="container-xxl py-3">
+    <div class="container-xxl py-4">
         <nav aria-label="breadcrumb">
-            <ol class="breadcrumb small">
+            <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ $term !== '' ? 'Search' : 'Shop all' }}</li>
+                <li class="breadcrumb-item active" aria-current="page">{{ $term !== '' ? 'Search' : 'Products' }}</li>
             </ol>
         </nav>
-        <h1 class="h3 mb-3">
-            @if ($term !== '') Results for “{{ $term }}” @else {{ request()->boolean('on_sale') ? 'On sale' : 'All products' }} @endif
+        <h1 class="page-title mb-4">
+            @if ($term !== '') Results for “{{ $term }}” @else {{ request()->boolean('on_sale') ? 'Deals' : 'All products' }} @endif
         </h1>
 
-        <div class="row g-4">
-            <aside class="col-lg-2">
-                <h2 class="h6 text-uppercase text-body-secondary small">Departments</h2>
-                <div class="list-group list-group-flush small">
-                    <a href="{{ request()->fullUrlWithQuery(['department' => null, 'page' => null]) }}" class="list-group-item list-group-item-action px-0 border-0 @if (! $activeDepartment) fw-semibold text-primary @endif">All departments</a>
-                    @foreach ($departments as $dept)
-                        <a href="{{ request()->fullUrlWithQuery(['department' => $dept->slug, 'page' => null]) }}" class="list-group-item list-group-item-action px-0 border-0 @if ($activeDepartment?->is($dept)) fw-semibold text-primary @endif">{{ $dept->name }}</a>
-                    @endforeach
-                </div>
+        <div class="row g-4 g-xl-5">
+            <aside class="col-lg-3 col-xl-2">
+                @include('store._filters', ['links' => $links, 'linksTitle' => 'Departments'])
             </aside>
-            <div class="col-lg-10">
+            <div class="col-lg-9 col-xl-10">
                 @include('store._grid')
             </div>
         </div>

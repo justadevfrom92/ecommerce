@@ -1,4 +1,4 @@
-@props(['title' => null, 'heading' => null])
+@props(['title' => null, 'heading' => null, 'subtitle' => null, 'crumbs' => []])
 @php
     // Sidebar sections. A link shows only if its route exists and the user holds its permission.
     $nav = [
@@ -43,28 +43,49 @@
 <body class="admin-body">
 <a class="visually-hidden-focusable" href="#main">Skip to content</a>
 
-<header class="admin-topbar navbar bg-body border-bottom sticky-top px-3">
+<header class="admin-topbar navbar sticky-top px-3 px-lg-4">
     <div class="d-flex align-items-center gap-2">
         <button class="btn btn-link nav-icon-btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#admin-sidebar" aria-controls="admin-sidebar" aria-label="Open menu">
             <i class="bi bi-list"></i>
         </button>
-        <a href="{{ route('home') }}" class="site-logo" aria-label="{{ setting('store_name') }} home">
-            <img src="{{ asset('images/logo.svg') }}" alt="{{ setting('store_name') }}" width="36" height="36">
+        <a href="{{ route('home') }}" class="site-logo d-flex align-items-center gap-2 text-decoration-none" aria-label="{{ setting('store_name') }} home">
+            <img src="{{ asset('images/logo.svg') }}" alt="{{ setting('store_name') }}" width="34" height="34">
         </a>
-        <span class="badge text-bg-dark">Admin</span>
+        <span class="pill pill-dark ms-1">Admin</span>
     </div>
-    <div class="d-flex align-items-center gap-2">
-        <a href="{{ route('home') }}" class="btn btn-sm btn-outline-secondary d-none d-sm-inline-flex"><i class="bi bi-shop me-1"></i>View store</a>
-        <div class="dropdown">
-            <button class="btn btn-link nav-icon-btn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Account"><i class="bi bi-person-circle"></i></button>
-            <div class="dropdown-menu dropdown-menu-end shadow">
-                <div class="px-3 py-2 small">
-                    <div class="fw-semibold">{{ $user->name }}</div>
-                    <div class="text-body-secondary">{{ $user->roles->pluck('name')->join(', ') ?: 'No role' }}</div>
+    @can('products.view')
+        <form action="{{ route('admin.products.index') }}" method="GET" role="search" class="d-none d-md-block mx-auto">
+            <div class="search-pill">
+                <i class="bi bi-search" aria-hidden="true"></i>
+                <input type="search" name="search" class="form-control" placeholder="Search products…" aria-label="Search products">
+            </div>
+        </form>
+    @endcan
+    <div class="d-flex align-items-center gap-1">
+        <a href="{{ route('home') }}" class="nav-icon-btn" title="View store" aria-label="View store"><i class="bi bi-shop"></i></a>
+        @if (Route::has('admin.emails.inbox.index') && $user->can('emails.inbox'))
+            @php($unread = \App\Models\InboundMessage::whereNull('read_at')->count())
+            <a href="{{ route('admin.emails.inbox.index', ['filter' => 'unread']) }}" class="nav-icon-btn position-relative" aria-label="Inbox, {{ $unread }} unread" title="Inbox">
+                <i class="bi bi-bell"></i>
+                @if ($unread)<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill cart-badge" style="background: var(--ms-red) !important">{{ $unread > 99 ? '99+' : $unread }}</span>@endif
+            </a>
+        @endif
+        <div class="dropdown ms-1">
+            <button class="btn p-0 border-0" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Account">
+                <span class="avatar-sm" style="width: 2.25rem; height: 2.25rem">{{ \Illuminate\Support\Str::of($user->name)->explode(' ')->map(fn ($p) => mb_substr($p, 0, 1))->take(2)->join('') }}</span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end shadow-sm p-0" style="min-width: 15rem">
+                <div class="px-3 py-3 border-bottom">
+                    <div class="fw-bold" style="color: var(--ms-heading)">{{ $user->name }}</div>
+                    <div class="small text-muted-2">{{ $user->roles->pluck('name')->join(', ') ?: 'No role' }}</div>
                 </div>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{{ route('account.edit') }}">My account</a>
-                <form method="POST" action="{{ route('logout') }}">@csrf<button class="dropdown-item">Log out</button></form>
+                <div class="py-2">
+                    <a class="dropdown-item" href="{{ route('account.edit') }}"><i class="bi bi-person me-2"></i>My account</a>
+                    <a class="dropdown-item" href="{{ route('home') }}"><i class="bi bi-shop me-2"></i>View store</a>
+                </div>
+                <div class="border-top p-2">
+                    <form method="POST" action="{{ route('logout') }}">@csrf<button class="btn btn-soft btn-sm w-100"><i class="bi bi-box-arrow-right me-1"></i>Log out</button></form>
+                </div>
             </div>
         </div>
     </div>
@@ -93,13 +114,27 @@
         </nav>
     </aside>
 
-    <main id="main" class="admin-main flex-grow-1 p-3 p-lg-4">
+    <main id="main" class="admin-main flex-grow-1">
         @if ($heading ?? $title)
-            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
-                <h1 class="h3 mb-0">{{ $heading ?? $title }}</h1>
-                @isset($actions)
-                    <div class="d-flex gap-2">{{ $actions }}</div>
-                @endisset
+            <div class="admin-page-head">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Admin</a></li>
+                        @foreach ($crumbs as $label => $url)
+                            <li class="breadcrumb-item"><a href="{{ $url }}">{{ $label }}</a></li>
+                        @endforeach
+                        <li class="breadcrumb-item active" aria-current="page">{{ $heading ?? $title }}</li>
+                    </ol>
+                </nav>
+                <div class="d-flex flex-wrap align-items-end justify-content-between gap-3">
+                    <div>
+                        <h1 class="page-title">{{ $heading ?? $title }}</h1>
+                        @if ($subtitle)<p class="admin-subtitle mt-1">{{ $subtitle }}</p>@endif
+                    </div>
+                    @isset($actions)
+                        <div class="d-flex flex-wrap gap-2 align-items-center">{{ $actions }}</div>
+                    @endisset
+                </div>
             </div>
         @endif
         @include('partials.flash')
@@ -112,8 +147,9 @@
     </main>
 </div>
 
-<footer class="admin-footer border-top small text-body-secondary px-3 py-2 d-flex justify-content-end">
-    &copy; {{ date('Y') }} {{ setting('store_name') }}
+<footer class="admin-footer px-3 px-lg-4 py-3 d-flex justify-content-between">
+    <span>{{ setting('store_name') }} admin</span>
+    <span>&copy; {{ date('Y') }} {{ setting('store_name') }}</span>
 </footer>
 
 @include('partials.scripts')

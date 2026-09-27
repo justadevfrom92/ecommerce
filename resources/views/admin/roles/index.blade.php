@@ -11,7 +11,7 @@
         @foreach ($roles as $role)
             <tr>
                 <td>
-                    <div class="fw-semibold">{{ $role->name }} @if ($role->is_super)<span class="badge text-bg-dark">Super</span>@endif @if (in_array($role->slug, $protected, true))<span class="badge text-bg-light border">Built in</span>@endif</div>
+                    <div class="fw-semibold">{{ $role->name }} @if ($role->is_super)<span class="pill pill-dark">Super</span>@endif @if (in_array($role->slug, $protected, true))<span class="pill pill-neutral">Built in</span>@endif</div>
                     <div class="small text-body-secondary">{{ $role->description }}</div>
                 </td>
                 <td class="text-end">{{ $role->is_super ? 'All' : $role->permissions_count }}</td>
@@ -24,7 +24,7 @@
                 </td>
                 <td class="text-end text-nowrap">
                     @if (! $role->is_super || auth()->user()->isSuperAdmin())
-                        <a href="{{ route('admin.roles.edit', $role) }}" class="btn btn-sm btn-outline-secondary" aria-label="Edit {{ $role->name }}"><i class="bi bi-pencil"></i></a>
+                        <a href="{{ route('admin.roles.edit', $role) }}" class="btn btn-sm btn-soft" aria-label="Edit {{ $role->name }}"><i class="bi bi-pencil"></i></a>
                         @unless (in_array($role->slug, $protected, true))
                             <x-delete-button :action="route('admin.roles.destroy', $role)" icon-only :label="'Delete '.$role->name" :confirm="'Delete the '.$role->name.' role? Users keep their other roles.'" />
                         @endunless

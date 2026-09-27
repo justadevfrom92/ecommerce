@@ -1,64 +1,83 @@
-<x-layouts.store title="Your cart">
-    <div class="container-xxl py-3">
-        <h1 class="h3 mb-4">Your cart</h1>
+<x-layouts.store title="Cart">
+    <div class="container-xxl py-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Cart</li>
+            </ol>
+        </nav>
+        <h1 class="page-title mb-4">Cart</h1>
 
         @if ($lines->isEmpty())
-            <div class="text-center py-5">
-                <i class="bi bi-cart3 fs-1 text-body-secondary d-block mb-3"></i>
-                <p class="mb-3">Your cart is empty.</p>
+            <div class="panel panel-body text-center py-5 mb-5">
+                <i class="bi bi-cart3 fs-1 text-muted-2 d-block mb-3"></i>
+                <p class="fw-bold mb-3" style="color: var(--ms-heading)">Your cart is empty.</p>
                 <a href="{{ route('search') }}" class="btn btn-primary">Start shopping</a>
             </div>
         @else
-            <div class="row g-4 mb-5">
+            <div class="row g-4 g-xl-5 mb-5">
                 <div class="col-lg-8">
-                    <div class="card shadow-sm border-0">
-                        <ul class="list-group list-group-flush">
-                            @foreach ($lines as $line)
-                                <li class="list-group-item py-3">
-                                    <div class="d-flex gap-3 align-items-center">
-                                        <a href="{{ route('products.show', $line->product) }}" class="flex-shrink-0">
-                                            <img src="{{ $line->product->imageUrl() }}" alt="" width="72" height="72" class="rounded object-fit-cover bg-body-tertiary">
-                                        </a>
-                                        <div class="flex-grow-1 min-w-0">
-                                            <a href="{{ route('products.show', $line->product) }}" class="fw-semibold text-reset text-decoration-none d-block text-truncate">{{ $line->product->name }}</a>
-                                            <div class="small text-body-secondary">{{ money($line->product->price) }} each</div>
-                                        </div>
-                                        <form method="POST" action="{{ route('cart.update', $line->product) }}" class="flex-shrink-0">
-                                            @csrf @method('PATCH')
-                                            <label for="qty-{{ $line->product->id }}" class="visually-hidden">Quantity for {{ $line->product->name }}</label>
-                                            <select id="qty-{{ $line->product->id }}" name="quantity" class="form-select form-select-sm" data-auto-submit>
-                                                @for ($i = 0; $i <= min(99, max($line->product->stock, $line->quantity)); $i++)
-                                                    <option value="{{ $i }}" @selected($i === $line->quantity)>{{ $i === 0 ? 'Remove' : $i }}</option>
-                                                @endfor
-                                            </select>
-                                            <noscript><button class="btn btn-sm btn-link">Update</button></noscript>
-                                        </form>
-                                        <div class="fw-semibold text-end flex-shrink-0" style="min-width: 5rem">{{ money($line->total) }}</div>
-                                        <form method="POST" action="{{ route('cart.destroy', $line->product) }}" class="flex-shrink-0">
-                                            @csrf @method('DELETE')
-                                            <button class="btn btn-sm btn-link text-body-secondary" aria-label="Remove {{ $line->product->name }}"><i class="bi bi-trash"></i></button>
-                                        </form>
-                                    </div>
-                                </li>
-                            @endforeach
-                        </ul>
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="width: 4rem"></th>
+                                    <th scope="col">Products</th>
+                                    <th scope="col" class="text-end">Price</th>
+                                    <th scope="col" class="text-center">Quantity</th>
+                                    <th scope="col" class="text-end">Total</th>
+                                    <th scope="col"><span class="visually-hidden">Remove</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($lines as $line)
+                                    <tr>
+                                        <td><a href="{{ route('products.show', $line->product) }}"><img src="{{ $line->product->imageUrl() }}" alt="" class="thumb"></a></td>
+                                        <td style="min-width: 14rem"><a href="{{ route('products.show', $line->product) }}" class="table-link">{{ $line->product->name }}</a></td>
+                                        <td class="text-end tabular">{{ money($line->product->price) }}</td>
+                                        <td class="text-center">
+                                            <form method="POST" action="{{ route('cart.update', $line->product) }}">
+                                                @csrf @method('PATCH')
+                                                <div class="qty-stepper" data-qty>
+                                                    <button type="button" class="btn btn-link text-body p-0" data-qty-step="-1" aria-label="Decrease {{ $line->product->name }}"><i class="bi bi-dash"></i></button>
+                                                    <label for="qty-{{ $line->product->id }}" class="visually-hidden">Quantity for {{ $line->product->name }}</label>
+                                                    <input type="number" id="qty-{{ $line->product->id }}" name="quantity" value="{{ $line->quantity }}" min="0" max="{{ min(99, max($line->product->stock, $line->quantity)) }}" data-auto-submit>
+                                                    <button type="button" class="btn btn-link text-body p-0" data-qty-step="1" aria-label="Increase {{ $line->product->name }}"><i class="bi bi-plus"></i></button>
+                                                </div>
+                                                <noscript><button class="btn btn-sm btn-link">Update</button></noscript>
+                                            </form>
+                                        </td>
+                                        <td class="text-end fw-bold tabular" style="color: var(--ms-heading)">{{ money($line->total) }}</td>
+                                        <td class="text-end">
+                                            <form method="POST" action="{{ route('cart.destroy', $line->product) }}">
+                                                @csrf @method('DELETE')
+                                                <button class="btn btn-link text-muted-2 p-1" aria-label="Remove {{ $line->product->name }}"><i class="bi bi-trash-fill"></i></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                <tr>
+                                    <td colspan="4" class="fw-bold fs-6" style="color: var(--ms-heading)">Items subtotal :</td>
+                                    <td class="text-end fw-extrabold fs-6 tabular" style="color: var(--ms-heading)">{{ money($totals['subtotal']) }}</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <div class="col-lg-4">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body">
-                            <h2 class="h5 mb-3">Order summary</h2>
-                            @include('store._totals', ['totals' => $totals])
-                            @if (Route::has('checkout.create'))
-                                <a href="{{ route('checkout.create') }}" class="btn btn-primary w-100 mt-3">Proceed to checkout</a>
-                            @endif
-                            <a href="{{ route('search') }}" class="btn btn-link w-100 mt-1">Continue shopping</a>
+                    <div class="panel panel-body summary">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="mb-0">Summary</h3>
+                            <a href="{{ route('search') }}" class="small fw-bold">Keep shopping</a>
                         </div>
+                        @include('store._totals', ['totals' => $totals])
+                        <a href="{{ route('checkout.create') }}" class="btn btn-primary w-100">Proceed to check out <i class="bi bi-chevron-right small"></i></a>
                     </div>
                 </div>
             </div>
         @endif
 
-        <x-product-slider title="Customers also bought" :products="$suggestions" />
+        <x-product-slider title="Customers also bought" :products="$suggestions" :view-all="route('search')" />
     </div>
 </x-layouts.store>

@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Campaign extends Model
 {
     public const STATUSES = [
-        'draft' => 'text-bg-secondary',
-        'sending' => 'text-bg-warning',
-        'sent' => 'text-bg-success',
+        'draft' => 'pill pill-neutral',
+        'sending' => 'pill pill-warning',
+        'sent' => 'pill pill-success',
     ];
 
     protected function casts(): array

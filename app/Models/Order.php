@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 #[Fillable([
@@ -24,13 +25,13 @@ class Order extends Model
     use HasFactory;
 
     public const STATUSES = [
-        'pending_payment' => ['label' => 'Pending payment', 'badge' => 'text-bg-warning'],
-        'paid' => ['label' => 'Paid', 'badge' => 'text-bg-info'],
-        'processing' => ['label' => 'Processing', 'badge' => 'text-bg-primary'],
-        'shipped' => ['label' => 'Shipped', 'badge' => 'text-bg-dark'],
-        'delivered' => ['label' => 'Delivered', 'badge' => 'text-bg-success'],
-        'cancelled' => ['label' => 'Cancelled', 'badge' => 'text-bg-secondary'],
-        'refunded' => ['label' => 'Refunded', 'badge' => 'text-bg-danger'],
+        'pending_payment' => ['label' => 'Pending payment', 'badge' => 'pill pill-warning', 'icon' => 'clock'],
+        'paid' => ['label' => 'Paid', 'badge' => 'pill pill-info', 'icon' => 'info-circle'],
+        'processing' => ['label' => 'Processing', 'badge' => 'pill pill-primary', 'icon' => 'arrow-repeat'],
+        'shipped' => ['label' => 'Shipped', 'badge' => 'pill pill-success', 'icon' => 'truck'],
+        'delivered' => ['label' => 'Delivered', 'badge' => 'pill pill-success', 'icon' => 'check-lg'],
+        'cancelled' => ['label' => 'Cancelled', 'badge' => 'pill pill-neutral', 'icon' => 'x-lg'],
+        'refunded' => ['label' => 'Refunded', 'badge' => 'pill pill-danger', 'icon' => 'arrow-counterclockwise'],
     ];
 
     /** Statuses whose stock has been given back. */
@@ -78,7 +79,15 @@ class Order extends Model
 
     public function statusBadge(): string
     {
-        return self::STATUSES[$this->status]['badge'] ?? 'text-bg-light';
+        return self::STATUSES[$this->status]['badge'] ?? 'pill pill-neutral';
+    }
+
+    /** Status pill markup with its icon, escaped. */
+    public function statusPill(): HtmlString
+    {
+        $icon = self::STATUSES[$this->status]['icon'] ?? 'dot';
+
+        return new HtmlString('<span class="'.e($this->statusBadge()).'">'.e($this->statusLabel()).' <i class="bi bi-'.e($icon).'"></i></span>');
     }
 
     public function isAwaitingPayment(): bool

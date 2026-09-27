@@ -5,11 +5,11 @@
 @props(['paginator', 'label' => 'results'])
 @php($window = \App\Support\PageWindow::make($paginator->currentPage(), $paginator->lastPage()))
 <div {{ $attributes->class('d-flex flex-column flex-md-row align-items-center justify-content-between gap-2') }}>
-    <p class="small text-body-secondary mb-0" aria-live="polite">
+    <p class="showing mb-0" aria-live="polite">
         @if ($paginator->total() > 0)
-            Showing <span class="fw-semibold">{{ number_format($paginator->firstItem()) }}</span>
-            to <span class="fw-semibold">{{ number_format($paginator->lastItem()) }}</span>
-            of <span class="fw-semibold">{{ number_format($paginator->total()) }}</span> {{ $label }}
+            Showing <strong>{{ number_format($paginator->firstItem()) }}</strong>
+            to <strong>{{ number_format($paginator->lastItem()) }}</strong>
+            of <strong>{{ number_format($paginator->total()) }}</strong> {{ $label }}
         @else
             No {{ $label }}
         @endif
@@ -17,9 +17,9 @@
 
     @if ($paginator->hasPages())
         <nav aria-label="Pagination">
-            <ul class="pagination pagination-sm mb-0 flex-wrap">
+            <ul class="pagination mb-0 flex-wrap">
                 <li class="page-item @if ($paginator->onFirstPage()) disabled @endif">
-                    <a class="page-link" href="{{ $paginator->previousPageUrl() ?? '#' }}" rel="prev" aria-label="Previous page">&lsaquo;</a>
+                    <a class="page-link" href="{{ $paginator->previousPageUrl() ?? '#' }}" rel="prev" aria-label="Previous page"><i class="bi bi-chevron-left"></i></a>
                 </li>
                 @foreach ($window as $page)
                     @if ($page === null)
@@ -31,7 +31,7 @@
                     @endif
                 @endforeach
                 <li class="page-item @if (! $paginator->hasMorePages()) disabled @endif">
-                    <a class="page-link" href="{{ $paginator->nextPageUrl() ?? '#' }}" rel="next" aria-label="Next page">&rsaquo;</a>
+                    <a class="page-link" href="{{ $paginator->nextPageUrl() ?? '#' }}" rel="next" aria-label="Next page"><i class="bi bi-chevron-right"></i></a>
                 </li>
             </ul>
         </nav>

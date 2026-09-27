@@ -1,57 +1,62 @@
 {{-- Account dropdown in the top-right: login popup for guests, account links when signed in. --}}
 @php($loginErrors = $errors->getBag('login'))
 <div class="dropdown">
-    <button class="btn btn-link nav-icon-btn" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside"
+    <button class="nav-icon-btn" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside"
             aria-expanded="false" aria-label="Account" @if ($loginErrors->any()) data-open-on-load @endif>
-        <i class="bi bi-person-circle"></i>
+        <i class="bi bi-person"></i>
     </button>
-    <div class="dropdown-menu dropdown-menu-end shadow account-menu">
+    <div class="dropdown-menu dropdown-menu-end shadow-sm account-menu p-0">
         @guest
-            <form method="POST" action="{{ route('login') }}" class="px-3 py-2">
+            <form method="POST" action="{{ route('login') }}" class="p-3">
                 @csrf
-                <h6 class="mb-3">Sign in to your account</h6>
+                <h6 class="fw-extrabold mb-1">Sign in to your account</h6>
+                <p class="small text-muted-2 mb-3">Get access to your orders and faster checkout.</p>
                 @if ($loginErrors->any())
                     <div class="alert alert-danger py-2 small">{{ $loginErrors->first() }}</div>
                 @endif
-                <div class="mb-2">
-                    <label for="nav-email" class="form-label small mb-1">Email</label>
-                    <input type="email" class="form-control form-control-sm" id="nav-email" name="email" value="{{ old('email') }}" required autocomplete="email">
+                <label for="nav-email" class="form-label-caps d-block mb-1 ps-0">Email address</label>
+                <div class="input-icon mb-2">
+                    <i class="bi bi-person-fill" aria-hidden="true"></i>
+                    <input type="email" class="form-control form-control-sm" id="nav-email" name="email" value="{{ old('email') }}" placeholder="name@example.com" required autocomplete="email">
                 </div>
-                <div class="mb-2">
-                    <label for="nav-password" class="form-label small mb-1">Password</label>
-                    <input type="password" class="form-control form-control-sm" id="nav-password" name="password" required autocomplete="current-password">
+                <label for="nav-password" class="form-label-caps d-block mb-1 ps-0">Password</label>
+                <div class="input-icon mb-2">
+                    <i class="bi bi-key-fill" aria-hidden="true"></i>
+                    <input type="password" class="form-control form-control-sm" id="nav-password" name="password" placeholder="Password" required autocomplete="current-password">
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="form-check small">
+                    <div class="form-check small mb-0">
                         <input class="form-check-input" type="checkbox" name="remember" value="1" id="nav-remember">
                         <label class="form-check-label" for="nav-remember">Remember me</label>
                     </div>
-                    <a href="{{ route('password.request') }}" class="small">Forgot password?</a>
+                    <a href="{{ route('password.request') }}" class="small fw-semibold">Forgot password?</a>
                 </div>
                 <button type="submit" class="btn btn-primary btn-sm w-100">Log in</button>
             </form>
-            <div class="dropdown-divider"></div>
-            <div class="px-3 pb-2 small text-center">
-                New here? <a href="{{ route('register') }}">Create an account</a>
+            <div class="border-top px-3 py-2 small text-center">
+                New here? <a href="{{ route('register') }}" class="fw-bold">Create an account</a>
             </div>
         @else
-            <div class="px-3 py-2">
-                <div class="fw-semibold text-truncate">{{ auth()->user()->name }}</div>
-                <div class="small text-body-secondary text-truncate">{{ auth()->user()->email }}</div>
+            <div class="d-flex align-items-center gap-2 px-3 py-3 border-bottom">
+                <span class="avatar-sm">{{ \Illuminate\Support\Str::of(auth()->user()->name)->explode(' ')->map(fn ($p) => mb_substr($p, 0, 1))->take(2)->join('') }}</span>
+                <div class="min-w-0">
+                    <div class="fw-bold text-truncate" style="color: var(--ms-heading)">{{ auth()->user()->name }}</div>
+                    <div class="small text-muted-2 text-truncate">{{ auth()->user()->email }}</div>
+                </div>
             </div>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="{{ route('account.edit') }}"><i class="bi bi-person me-2"></i>My account</a>
-            @if (Route::has('account.orders.index'))
+            <div class="py-2">
+                <a class="dropdown-item" href="{{ route('account.edit') }}"><i class="bi bi-person me-2"></i>Profile</a>
                 <a class="dropdown-item" href="{{ route('account.orders.index') }}"><i class="bi bi-bag me-2"></i>My orders</a>
-            @endif
-            @can('admin.access')
-                <a class="dropdown-item" href="{{ route('admin.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Admin</a>
-            @endcan
-            <div class="dropdown-divider"></div>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right me-2"></i>Log out</button>
-            </form>
+                @can('admin.access')
+                    <a class="dropdown-item" href="{{ route('admin.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Admin</a>
+                @endcan
+            </div>
+            <div class="border-top p-2">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-soft btn-sm w-100"><i class="bi bi-box-arrow-right me-1"></i>Log out</button>
+                </form>
+            </div>
         @endguest
     </div>
 </div>

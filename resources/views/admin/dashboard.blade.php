@@ -1,98 +1,142 @@
-<x-layouts.admin title="Dashboard">
+<x-layouts.admin :title="$stats ? 'Ecommerce Dashboard' : 'Dashboard'" :subtitle="$stats ? 'Here’s what’s going on at your business right now' : null">
     @if ($stats === null)
-        <div class="card border-0 shadow-sm"><div class="card-body p-4">
-            <h2 class="h5">Welcome, {{ auth()->user()->name }}</h2>
-            <p class="text-body-secondary mb-0">Use the menu to get to the sections your role can access.</p>
-        </div></div>
+        <div class="panel panel-body">
+            <h2 class="h5 fw-extrabold">Welcome, {{ auth()->user()->name }}</h2>
+            <p class="text-muted-2 mb-0">Use the menu to get to the sections your role can access.</p>
+        </div>
     @else
-        <div class="row g-3 mb-4">
-            @foreach ($stats as $stat)
-                <div class="col-sm-6 col-xl-3">
-                    <div class="card stat-card border-0 shadow-sm h-100">
-                        <div class="card-body d-flex align-items-center gap-3">
-                            <span class="stat-icon bg-{{ $stat['color'] }}-subtle text-{{ $stat['color'] }}-emphasis"><i class="bi bi-{{ $stat['icon'] }}"></i></span>
-                            <div>
-                                <div class="small text-body-secondary">{{ $stat['label'] }}</div>
-                                <div class="fs-4 fw-bold">{{ $stat['value'] }}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        {{-- Status flags --}}
+        <div class="d-flex flex-wrap gap-4 gap-xl-5 pb-4 mb-4 border-bottom">
+            @foreach ($flags as $flag)
+                <a href="{{ $flag['url'] }}" class="dash-flag text-decoration-none">
+                    <span class="flag-icon" style="background: {{ $flag['bg'] }}; color: {{ $flag['fg'] }}"><i class="bi bi-{{ $flag['icon'] }}"></i></span>
+                    <span>
+                        <span class="flag-num d-block">{{ number_format($flag['num']) }} {{ $flag['noun'] }}</span>
+                        <span class="flag-label">{{ $flag['label'] }}</span>
+                    </span>
+                </a>
             @endforeach
         </div>
 
-        @if ($toFulfil || $awaitingPayment)
-            <div class="d-flex flex-wrap gap-2 mb-4">
-                @if ($toFulfil)
-                    <a href="{{ route('admin.orders.index', ['status' => 'paid']) }}" class="btn btn-sm btn-primary"><i class="bi bi-box me-1"></i>{{ $toFulfil }} {{ Str::plural('order', $toFulfil) }} to fulfil</a>
-                @endif
-                @if ($awaitingPayment)
-                    <a href="{{ route('admin.orders.index', ['status' => 'pending_payment']) }}" class="btn btn-sm btn-outline-warning"><i class="bi bi-hourglass-split me-1"></i>{{ $awaitingPayment }} awaiting payment</a>
-                @endif
+        {{-- Total sells --}}
+        <div class="row g-4 mb-4">
+            <div class="col-xxl-12">
+                <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-2">
+                    <div>
+                        <h2 class="section-title">Total sells</h2>
+                        <p class="admin-subtitle">Payments received in the last 30 days</p>
+                    </div>
+                    <div class="text-end">
+                        <div class="kpi-value">{{ money($revenue30) }}</div>
+                        <div class="kpi-sub">{{ number_format($orders30) }} paid {{ Str::plural('order', $orders30) }}</div>
+                    </div>
+                </div>
+                @include('admin._sales-chart', ['series' => $series])
             </div>
-        @endif
+        </div>
 
-        <div class="row g-4">
+        {{-- KPI cards --}}
+        <div class="row g-3 mb-5">
+            <div class="col-md-4">
+                <div class="panel panel-body h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h3 class="kpi-title">Total orders
+                                @if ($kpis['orders']['change'] !== null)
+                                    <span class="pill {{ $kpis['orders']['change'] >= 0 ? 'pill-success' : 'pill-warning' }} ms-1">{{ $kpis['orders']['change'] >= 0 ? '+' : '' }}{{ $kpis['orders']['change'] }}%</span>
+                                @endif
+                            </h3>
+                            <div class="kpi-sub">Last 7 days</div>
+                        </div>
+                        <div class="kpi-value">{{ number_format($kpis['orders']['value']) }}</div>
+                    </div>
+                    <div class="meter mb-2" role="img" aria-label="{{ $kpis['orders']['paidPct'] }}% paid"><span style="width: {{ $kpis['orders']['paidPct'] }}%"></span></div>
+                    <div class="d-flex justify-content-between small"><span class="fw-semibold">Paid</span><span class="tabular">{{ $kpis['orders']['paidPct'] }}%</span></div>
+                    <div class="d-flex justify-content-between small text-muted-2"><span>Pending, cancelled or refunded</span><span class="tabular">{{ 100 - $kpis['orders']['paidPct'] }}%</span></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-body h-100">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h3 class="kpi-title">New customers
+                                @if ($kpis['customers']['change'] !== null)
+                                    <span class="pill {{ $kpis['customers']['change'] >= 0 ? 'pill-success' : 'pill-warning' }} ms-1">{{ $kpis['customers']['change'] >= 0 ? '+' : '' }}{{ $kpis['customers']['change'] }}%</span>
+                                @endif
+                            </h3>
+                            <div class="kpi-sub">Last 7 days</div>
+                        </div>
+                        <div class="kpi-value">{{ number_format($kpis['customers']['value']) }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-body h-100">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h3 class="kpi-title">Average order</h3>
+                            <div class="kpi-sub">Last 30 days</div>
+                        </div>
+                        <div class="kpi-value">{{ money($kpis['aov']) }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 g-xl-5">
             <div class="col-xl-8">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-body py-3 d-flex justify-content-between align-items-center">
-                        <h2 class="h6 mb-0">Recent orders</h2>
-                        @can('orders.view')<a href="{{ route('admin.orders.index') }}" class="small">View all</a>@endcan
+                <div class="d-flex justify-content-between align-items-end mb-3">
+                    <div>
+                        <h2 class="section-title">Recent orders</h2>
+                        <p class="admin-subtitle">The latest orders across your store</p>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light"><tr>
-                                <th class="small text-uppercase text-body-secondary">Order</th>
-                                <th class="small text-uppercase text-body-secondary">Customer</th>
-                                <th class="small text-uppercase text-body-secondary">Status</th>
-                                <th class="small text-uppercase text-body-secondary text-end">Total</th>
-                            </tr></thead>
-                            <tbody>
-                                @forelse ($recentOrders as $order)
-                                    <tr>
-                                        <td>@can('orders.view')<a href="{{ route('admin.orders.show', $order) }}">{{ $order->number }}</a>@else {{ $order->number }} @endcan
-                                            <div class="small text-body-secondary">{{ $order->created_at->diffForHumans() }}</div></td>
-                                        <td>{{ $order->shipping_name }}</td>
-                                        <td><span class="badge {{ $order->statusBadge() }}">{{ $order->statusLabel() }}</span></td>
-                                        <td class="text-end">{{ money($order->total) }}</td>
-                                    </tr>
-                                @empty
-                                    <tr><td colspan="4" class="text-center text-body-secondary py-4">No orders yet.</td></tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+                    @can('orders.view')<a href="{{ route('admin.orders.index') }}" class="explore-link">View all <i class="bi bi-chevron-right small"></i></a>@endcan
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead><tr><th>Order</th><th>Customer</th><th>Status</th><th class="text-end">Total</th></tr></thead>
+                        <tbody>
+                            @forelse ($recentOrders as $order)
+                                <tr>
+                                    <td>@can('orders.view')<a href="{{ route('admin.orders.show', $order) }}" class="table-link">#{{ $order->number }}</a>@else #{{ $order->number }} @endcan
+                                        <div class="small text-muted-2">{{ $order->created_at->diffForHumans() }}</div></td>
+                                    <td class="fw-semibold" style="color: var(--ms-heading)">{{ $order->shipping_name }}</td>
+                                    <td>{{ $order->statusPill() }}</td>
+                                    <td class="text-end fw-bold tabular" style="color: var(--ms-heading)">{{ money($order->total) }}</td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="4" class="text-center text-muted-2 py-4">No orders yet.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <div class="col-xl-4 d-flex flex-column gap-4">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-body py-3"><h2 class="h6 mb-0">Top sellers (30 days)</h2></div>
-                    <ul class="list-group list-group-flush small">
-                        @forelse ($topProducts as $row)
-                            <li class="list-group-item d-flex justify-content-between gap-2">
-                                <span class="text-truncate">{{ $row->name }}</span>
-                                <span class="text-nowrap text-body-secondary">{{ $row->units }} sold</span>
-                            </li>
-                        @empty
-                            <li class="list-group-item text-body-secondary">No sales yet.</li>
-                        @endforelse
-                    </ul>
+                <div class="panel panel-body">
+                    <h3 class="kpi-title mb-1">Top sellers</h3>
+                    <div class="kpi-sub mb-3">Last 30 days</div>
+                    @forelse ($topProducts as $row)
+                        <div class="d-flex justify-content-between gap-2 py-2 border-top small">
+                            <span class="text-truncate fw-semibold" style="color: var(--ms-heading)">{{ $row->name }}</span>
+                            <span class="nowrap text-muted-2 tabular">{{ $row->units }} sold</span>
+                        </div>
+                    @empty
+                        <p class="small text-muted-2 mb-0">No sales yet.</p>
+                    @endforelse
                 </div>
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-body py-3 d-flex justify-content-between align-items-center">
-                        <h2 class="h6 mb-0">Low stock</h2>
-                        @can('products.view')<a href="{{ route('admin.products.index', ['stock' => 'low']) }}" class="small">View all</a>@endcan
+                <div class="panel panel-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="kpi-title">Low stock</h3>
+                        @can('products.view')<a href="{{ route('admin.products.index', ['stock' => 'low']) }}" class="small fw-bold">View all</a>@endcan
                     </div>
-                    <ul class="list-group list-group-flush small">
-                        @forelse ($lowStock as $product)
-                            <li class="list-group-item d-flex justify-content-between gap-2">
-                                <span class="text-truncate">{{ $product->name }}</span>
-                                <span class="badge {{ $product->stock === 0 ? 'text-bg-danger' : 'text-bg-warning' }}">{{ $product->stock }}</span>
-                            </li>
-                        @empty
-                            <li class="list-group-item text-body-secondary">Everything is well stocked.</li>
-                        @endforelse
-                    </ul>
+                    @forelse ($lowStock as $product)
+                        <div class="d-flex justify-content-between align-items-center gap-2 py-2 border-top small">
+                            <span class="text-truncate fw-semibold" style="color: var(--ms-heading)">{{ $product->name }}</span>
+                            <span class="pill {{ $product->stock === 0 ? 'pill-danger' : 'pill-warning' }}">{{ $product->stock }}</span>
+                        </div>
+                    @empty
+                        <p class="small text-muted-2 mb-0">Everything is well stocked.</p>
+                    @endforelse
                 </div>
             </div>
         </div>

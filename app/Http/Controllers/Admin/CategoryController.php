@@ -9,6 +9,7 @@ use App\Support\DataTable;
 use App\Support\Slug;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class CategoryController extends Controller
@@ -47,6 +48,7 @@ class CategoryController extends Controller
         $data = $this->validated($request);
         $data['slug'] = Slug::unique(Category::class, ($data['slug'] ?? null) ?: $data['name']);
         Category::create($data);
+        Cache::forget('nav.departments');
 
         return redirect()->route('admin.categories.index')->with('status', 'Category created.');
     }
@@ -61,6 +63,7 @@ class CategoryController extends Controller
         $data = $this->validated($request);
         $data['slug'] = Slug::unique(Category::class, ($data['slug'] ?? null) ?: $data['name'], $category->id);
         $category->update($data);
+        Cache::forget('nav.departments');
 
         return redirect()->route('admin.categories.index')->with('status', 'Category saved.');
     }
@@ -72,6 +75,7 @@ class CategoryController extends Controller
         }
 
         $category->delete();
+        Cache::forget('nav.departments');
 
         return redirect()->route('admin.categories.index')->with('status', "Deleted {$category->name}.");
     }

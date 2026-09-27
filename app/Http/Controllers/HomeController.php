@@ -2,23 +2,61 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Department;
 use App\Models\HomeSlider;
+use App\Models\Product;
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
+    /** Keyword => Bootstrap Icons name, for the category tiles. */
+    private const ICONS = [
+        'electronic' => 'cpu', 'phone' => 'phone', 'laptop' => 'laptop', 'audio' => 'headphones', 'camera' => 'camera',
+        'cloth' => 'bag', 'fashion' => 'bag', 'men' => 'person', 'women' => 'person-heart', 'kid' => 'balloon', 'shoe' => 'tags',
+        'home' => 'house', 'kitchen' => 'cup-hot', 'furniture' => 'lamp', 'cookware' => 'fire', 'bedding' => 'moon-stars', 'decor' => 'flower1',
+        'sport' => 'trophy', 'fitness' => 'heart-pulse', 'camping' => 'tree', 'cycling' => 'bicycle', 'team' => 'dribbble',
+        'grocery' => 'basket', 'toy' => 'controller', 'book' => 'book', 'beauty' => 'stars', 'garden' => 'flower2', 'tool' => 'tools',
+    ];
+
     public function __invoke(): View
     {
         $sliders = HomeSlider::active()->get()
             ->map(fn (HomeSlider $slider) => [
                 'title' => $slider->title,
+                'icon' => $slider->source === 'sale' ? 'lightning-charge-fill' : null,
                 'products' => $slider->products(),
                 'viewAll' => $slider->viewAllUrl(),
             ]);
 
-        $departments = Department::active()->orderBy('sort_order')->orderBy('name')->withCount('products')->get();
+        $departments = Department::active()->orderBy('sort_order')->orderBy('name')->get();
 
-        return view('store.home', compact('sliders', 'departments'));
+        // Tiles: every department, then categories, capped so the row stays tidy.
+        $tiles = $departments->map(fn ($d) => ['name' => $d->name, 'url' => route('departments.show', $d), 'icon' => self::iconFor($d->name)])
+            ->concat(Category::active()->whereIn('department_id', $departments->pluck('id'))->orderBy('sort_order')->limit(16)->get()
+                ->map(fn ($c) => ['name' => $c->name, 'url' => route('categories.show', $c), 'icon' => self::iconFor($c->name)]))
+            ->take(11);
+
+        $maxDiscount = (int) round(Product::active()->whereNotNull('compare_at_price')->whereColumn('compare_at_price', '>', 'price')
+            ->selectRaw('MAX(1 - price / compare_at_price) * 100 as pct')->value('pct') ?? 0);
+
+        return view('store.home', [
+            'sliders' => $sliders,
+            'tiles' => $tiles,
+            'maxDiscount' => $maxDiscount,
+            'spotlight' => $departments->first(),
+        ]);
+    }
+
+    public static function iconFor(string $name): string
+    {
+        $name = strtolower($name);
+        foreach (self::ICONS as $needle => $icon) {
+            if (str_contains($name, $needle)) {
+                return $icon;
+            }
+        }
+
+        return 'tag';
     }
 }

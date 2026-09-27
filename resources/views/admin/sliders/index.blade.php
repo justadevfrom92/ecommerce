@@ -21,9 +21,9 @@
                     @if ($slider->source === 'category')<span class="text-body-secondary">: {{ $categories[$slider->source_id] ?? 'deleted' }}</span>@endif
                 </td>
                 <td class="text-end">{{ $slider->max_items }}</td>
-                <td><span class="badge {{ $slider->is_active ? 'text-bg-success' : 'text-bg-secondary' }}">{{ $slider->is_active ? 'Showing' : 'Hidden' }}</span></td>
+                <td><span class="{{ $slider->is_active ? 'pill pill-success' : 'pill pill-neutral' }}">{{ $slider->is_active ? 'Showing' : 'Hidden' }}</span></td>
                 <td class="text-end text-nowrap">
-                    <a href="{{ route('admin.sliders.edit', $slider) }}" class="btn btn-sm btn-outline-secondary" aria-label="Edit {{ $slider->title }}"><i class="bi bi-pencil"></i></a>
+                    <a href="{{ route('admin.sliders.edit', $slider) }}" class="btn btn-sm btn-soft" aria-label="Edit {{ $slider->title }}"><i class="bi bi-pencil"></i></a>
                     <x-delete-button :action="route('admin.sliders.destroy', $slider)" icon-only :label="'Delete '.$slider->title" :confirm="'Remove the '.$slider->title.' slider from the homepage?'" />
                 </td>
             </tr>

@@ -42,6 +42,13 @@ class ProductController extends Controller
         return view('admin.products.index', [
             'products' => $products,
             'departments' => Department::orderBy('name')->get(),
+            'counts' => [
+                'all' => Product::count(),
+                'active' => Product::where('is_active', true)->count(),
+                'inactive' => Product::where('is_active', false)->count(),
+                'low' => Product::whereBetween('stock', [1, 5])->count(),
+                'out' => Product::where('stock', 0)->count(),
+            ],
         ]);
     }
 

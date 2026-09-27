@@ -2,11 +2,11 @@
     <x-slot:actions>
         <form method="POST" action="{{ route('admin.emails.templates.test', $template) }}">
             @csrf
-            <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-send me-1"></i>Send me a test</button>
+            <button class="btn btn-sm btn-soft"><i class="bi bi-send me-1"></i>Send me a test</button>
         </form>
         <form method="POST" action="{{ route('admin.emails.templates.reset', $template) }}" data-confirm="Replace your wording with the default text?">
             @csrf
-            <button class="btn btn-sm btn-outline-secondary">Reset to default</button>
+            <button class="btn btn-sm btn-soft">Reset to default</button>
         </form>
     </x-slot:actions>
 

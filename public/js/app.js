@@ -33,6 +33,45 @@
 
     document.querySelectorAll('[data-slider]').forEach(initSlider);
 
+    /* ---------- Dashboard line chart: crosshair + tooltip ---------- */
+    document.querySelectorAll('[data-line-chart]').forEach(function (wrap) {
+        var svg = wrap.querySelector('svg'), tip = wrap.querySelector('.chart-tip');
+        var cross = svg.querySelector('.crosshair'), dot = svg.querySelector('.hover-dot');
+        function show(r) {
+            var x = r.getAttribute('data-x'), y = r.getAttribute('data-y');
+            cross.setAttribute('x1', x); cross.setAttribute('x2', x); cross.setAttribute('visibility', 'visible');
+            dot.setAttribute('cx', x); dot.setAttribute('cy', y); dot.setAttribute('visibility', 'visible');
+            tip.querySelector('.tip-value').textContent = r.getAttribute('data-value');
+            tip.querySelector('.tip-label').textContent = r.getAttribute('data-label');
+            tip.hidden = false;
+            var scale = svg.clientWidth / svg.viewBox.baseVal.width;
+            var left = x * scale + 12;
+            if (left + tip.offsetWidth > wrap.clientWidth) left = x * scale - tip.offsetWidth - 12;
+            tip.style.left = left + 'px';
+            tip.style.top = Math.max(0, y * scale - tip.offsetHeight - 8) + 'px';
+        }
+        function hide() { tip.hidden = true; cross.setAttribute('visibility', 'hidden'); dot.setAttribute('visibility', 'hidden'); }
+        svg.querySelectorAll('rect[data-x]').forEach(function (r) {
+            r.addEventListener('pointerenter', function () { show(r); });
+            r.addEventListener('focus', function () { show(r); });
+            r.addEventListener('blur', hide);
+        });
+        svg.addEventListener('pointerleave', hide);
+    });
+
+    /* ---------- Quantity steppers (− n +) ---------- */
+    document.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-qty-step]');
+        if (!btn) return;
+        var input = btn.closest('[data-qty]').querySelector('input');
+        var min = parseInt(input.min || '0', 10), max = parseInt(input.max || '99', 10);
+        var next = Math.min(max, Math.max(min, (parseInt(input.value, 10) || 0) + parseInt(btn.getAttribute('data-qty-step'), 10)));
+        if (String(next) !== input.value) {
+            input.value = next;
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    });
+
     /* ---------- Auto-submit selects (per page, sort, filters, cart qty) ---------- */
     document.addEventListener('change', function (e) {
         if (e.target.matches('[data-auto-submit]') && e.target.form) {

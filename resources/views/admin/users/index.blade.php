@@ -34,21 +34,21 @@
                 <td>{{ $user->email }}</td>
                 <td>
                     @forelse ($user->roles as $role)
-                        <span class="badge {{ $role->is_super ? 'text-bg-dark' : 'text-bg-light border' }}">{{ $role->name }}</span>
+                        <span class="{{ $role->is_super ? 'pill pill-dark' : 'pill pill-neutral' }}">{{ $role->name }}</span>
                     @empty
                         <span class="text-body-secondary small">—</span>
                     @endforelse
                 </td>
                 <td class="text-end">{{ $user->orders_count }}</td>
                 <td>
-                    <span class="badge {{ $user->is_active ? 'text-bg-success' : 'text-bg-secondary' }}">{{ $user->is_active ? 'Active' : 'Inactive' }}</span>
+                    <span class="{{ $user->is_active ? 'pill pill-success' : 'pill pill-neutral' }}">{{ $user->is_active ? 'Active' : 'Inactive' }}</span>
                 </td>
-                <td class="text-body-secondary small">{{ $user->last_login_at?->diffForHumans() ?? 'Never' }}</td>
-                <td class="text-body-secondary small">{{ $user->created_at->format('M j, Y') }}</td>
+                <td class="text-body-secondary small nowrap">{{ $user->last_login_at?->diffForHumans() ?? 'Never' }}</td>
+                <td class="text-body-secondary small nowrap">{{ $user->created_at->format('M j, Y') }}</td>
                 <td class="text-end text-nowrap">
                     @can('users.manage')
                         @if (! $user->isSuperAdmin() || auth()->user()->isSuperAdmin())
-                            <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-outline-secondary" aria-label="Edit {{ $user->name }}"><i class="bi bi-pencil"></i></a>
+                            <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-soft" aria-label="Edit {{ $user->name }}"><i class="bi bi-pencil"></i></a>
                         @endif
                     @endcan
                 </td>
