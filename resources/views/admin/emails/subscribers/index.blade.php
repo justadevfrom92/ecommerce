@@ -52,7 +52,6 @@
                         @csrf
                         <x-form.input name="email" label="Email" type="email" required />
                         <x-form.input name="name" label="Name" />
-                        <p class="small text-body-secondary">Only add people who agreed to receive your emails.</p>
                         <button class="btn btn-primary btn-sm w-100">Add</button>
                     </form>
                 </div>

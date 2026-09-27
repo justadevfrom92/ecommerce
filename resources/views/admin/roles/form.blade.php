@@ -22,7 +22,6 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
                     <h2 class="h6 mb-1">Permissions</h2>
-                    <p class="small text-body-secondary">Tick what this role can do. <strong>Access the admin area</strong> is needed for any admin section.</p>
                     @if ($role->is_super)
                         <div class="alert alert-info small py-2">Super roles already have every permission, so these boxes don't restrict them.</div>
                     @endif

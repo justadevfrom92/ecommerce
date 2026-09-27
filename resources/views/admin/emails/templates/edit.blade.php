@@ -14,7 +14,6 @@
         <div class="col-xl-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
-                    <p class="small text-body-secondary">{{ $template->description }}</p>
                     <form method="POST" action="{{ route('admin.emails.templates.update', $template) }}">
                         @csrf @method('PUT')
                         <x-form.input name="subject" label="Subject" :value="$template->subject" required />
@@ -34,7 +33,6 @@
         </div>
         <div class="col-xl-6">
             @include('admin.emails._preview', $preview)
-            <p class="small text-body-secondary mt-2">The preview uses sample data and shows your last saved version.</p>
         </div>
     </div>
 </x-layouts.admin>

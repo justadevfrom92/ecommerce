@@ -17,7 +17,6 @@
             <div class="col-lg-7">
                 <section class="pb-4 mb-4 border-bottom">
                     <h2 class="h4 fw-extrabold mb-1">Shipping Details</h2>
-                    <p class="text-muted-2 small mb-4">Order updates go to <strong>{{ $user->email }}</strong>.</p>
                     @php($f = fn ($field, $fallback = null) => old($field, $last?->{$field} ?? $fallback))
                     <div class="row g-3">
                         <div class="col-md-7">
@@ -55,8 +54,7 @@
                         </div>
                         <div class="col-md-5">
                             <label class="form-label" for="shipping_country">Country code</label>
-                            <input class="form-control text-uppercase @error('shipping_country') is-invalid @enderror" id="shipping_country" name="shipping_country" value="{{ $f('shipping_country', 'US') }}" maxlength="2" required autocomplete="country" aria-describedby="country-help">
-                            <div id="country-help" class="form-text">Two letters, e.g. US, CA, GB.</div>
+                            <input class="form-control text-uppercase @error('shipping_country') is-invalid @enderror" id="shipping_country" name="shipping_country" value="{{ $f('shipping_country', 'US') }}" maxlength="2" required autocomplete="country">
                             @error('shipping_country')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                     </div>
@@ -75,9 +73,7 @@
                             <input class="form-check-input" type="radio" checked disabled id="pay-card">
                             <label class="form-check-label fw-bold" for="pay-card" style="color: var(--ms-heading)">Credit or debit card <i class="bi bi-credit-card-2-front ms-1 text-muted-2"></i></label>
                         </div>
-                        <p class="small text-muted-2 mb-4">You'll enter your card on Stripe's secure checkout page.</p>
                     @else
-                        <p class="small text-muted-2 mb-4">Online payment isn't set up yet. Your order is saved as pending payment and we'll contact you.</p>
                     @endif
                     <div class="d-flex flex-wrap gap-2">
                         <button type="submit" class="btn btn-primary px-5" style="min-width: 16rem">

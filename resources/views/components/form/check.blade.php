@@ -6,5 +6,4 @@
         <input class="form-check-input" type="checkbox" role="{{ $switch ? 'switch' : 'checkbox' }}" id="{{ $id }}" name="{{ $name }}" value="1" @checked(old($name, $checked)) {{ $attributes->except('class') }}>
         <label class="form-check-label" for="{{ $id }}">{{ $label }}</label>
     </div>
-    @if ($help)<div class="form-text">{{ $help }}</div>@endif
 </div>

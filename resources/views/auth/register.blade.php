@@ -22,14 +22,13 @@
                 <div class="row g-3 mb-3">
                     <div class="col-sm-6">
                         <label for="password" class="form-label-caps d-block mb-1">Password</label>
-                        <input type="password" id="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" required autocomplete="new-password" aria-describedby="password-help">
+                        <input type="password" id="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" required autocomplete="new-password">
                         @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-sm-6">
                         <label for="password_confirmation" class="form-label-caps d-block mb-1">Confirm password</label>
                         <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Confirm password" required autocomplete="new-password">
                     </div>
-                    <div id="password-help" class="form-text mt-1">At least 8 characters.</div>
                 </div>
                 <div class="form-check mb-2">
                     <input class="form-check-input" type="checkbox" name="newsletter" value="1" id="newsletter" @checked(old('newsletter'))>

@@ -60,10 +60,10 @@
                         </div>
                         <div class="row g-3" style="max-width: 32rem">
                             <div class="col-sm-6">
-                                <a href="{{ route('categories.show', $product->category) }}" class="btn btn-lg btn-outline-orange w-100 rounded-pill"><i class="bi bi-grid me-2"></i>More like this</a>
+                                <a href="{{ route('categories.show', $product->category) }}" class="btn btn-lg btn-outline-primary w-100 rounded-pill"><i class="bi bi-grid me-2"></i>More like this</a>
                             </div>
                             <div class="col-sm-6">
-                                <button type="submit" class="btn btn-lg btn-orange w-100 rounded-pill"><i class="bi bi-cart-plus me-2"></i>Add to cart</button>
+                                <button type="submit" class="btn btn-lg btn-primary w-100 rounded-pill"><i class="bi bi-cart-plus me-2"></i>Add to cart</button>
                             </div>
                         </div>
                     </form>
@@ -99,7 +99,6 @@
                     <div class="detail-list">
                         <div class="detail-item"><i class="bi bi-truck"></i><span class="k">Shipping</span><span class="v">{{ (float) setting('shipping_flat_rate') > 0 ? money(setting('shipping_flat_rate')).' flat rate' : 'Free' }}@if ((float) setting('free_shipping_over') > 0), free over {{ money(setting('free_shipping_over')) }}@endif</span></div>
                         <div class="detail-item"><i class="bi bi-shield-check"></i><span class="k">Secure checkout</span><span class="v">Pay safely by card on Stripe.</span></div>
-                        <div class="detail-item"><i class="bi bi-chat-dots"></i><span class="k">Questions?</span><span class="v"><a href="{{ route('contact') }}">Contact us</a> and we'll reply by email.</span></div>
                     </div>
                 </div>
             </div>

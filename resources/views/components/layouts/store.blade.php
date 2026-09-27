@@ -105,9 +105,6 @@
                                 <li><a href="{{ route('search', ['on_sale' => 1]) }}">Deals</a></li>
                                 <li><a href="{{ auth()->check() ? route('account.orders.index') : route('login') }}">Track order</a></li>
                                 <li><a href="{{ auth()->check() ? route('account.edit') : route('login') }}">My account</a></li>
-                                @if (Route::has('contact'))
-                                    <li><a href="{{ route('contact') }}">Contact</a></li>
-                                @endif
                             </ul>
                         </div>
                     </nav>

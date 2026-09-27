@@ -1,5 +1,4 @@
 <x-layouts.admin title="Outgoing email log">
-    <p class="text-body-secondary small">Every email the store sends. Delivery, open and bounce statuses update automatically once Mailgun webhooks are connected.</p>
     <x-data-table :rows="$logs" search-placeholder="Search recipient or subject…" label="emails" :columns="[
         'created_at' => ['label' => 'Sent', 'sortable' => true],
         'to' => ['label' => 'To', 'sortable' => true],

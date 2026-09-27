@@ -1,5 +1,4 @@
 <x-layouts.admin title="Homepage sliders">
-    <p class="text-body-secondary">These product sliders appear on the homepage from top to bottom, in sort order.</p>
     <x-data-table :rows="$sliders" search-placeholder="Search sliders…" label="sliders" :columns="[
         'sort_order' => ['label' => 'Order', 'sortable' => true],
         'title' => ['label' => 'Title', 'sortable' => true],

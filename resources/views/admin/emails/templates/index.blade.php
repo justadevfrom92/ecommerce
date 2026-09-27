@@ -1,5 +1,4 @@
 <x-layouts.admin title="Email templates">
-    <p class="text-body-secondary">The wording of the automatic emails the store sends. Edit the text; the store fills in the <code>@{{placeholders}}</code>.</p>
     <x-data-table :rows="$templates" search-placeholder="Search templates…" label="templates" :columns="[
         'name' => ['label' => 'Template', 'sortable' => true],
         'subject' => ['label' => 'Subject'],

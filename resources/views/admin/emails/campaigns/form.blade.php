@@ -40,9 +40,6 @@
                     </form>
                 </div>
             </div>
-            @unless ($editing)
-                <p class="small text-body-secondary mt-2">Save the draft to preview it, send yourself a test, then send it to {{ number_format($subscriberCount) }} subscribers.</p>
-            @endunless
         </div>
         @isset($preview)
             <div class="col-xl-6">@include('admin.emails._preview', $preview)</div>

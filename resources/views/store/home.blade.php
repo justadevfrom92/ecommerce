@@ -28,7 +28,7 @@
                         <div class="promo-body">
                             <h2>{{ $spotlight->name }}</h2>
                             <p>Best in the market</p>
-                            <a href="{{ route('departments.show', $spotlight) }}" class="btn btn-orange">Buy now</a>
+                            <a href="{{ route('departments.show', $spotlight) }}" class="btn btn-primary">Buy now</a>
                         </div>
                         <i class="bi bi-phone promo-art" aria-hidden="true"></i>
                     </section>

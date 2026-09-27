@@ -1,5 +1,4 @@
 <x-layouts.admin title="Inbox">
-    <p class="text-body-secondary small">Emails sent to your store address (through a Mailgun route) and messages from the Contact page. {{ $unreadCount }} unread.</p>
     <x-data-table :rows="$messages" search-placeholder="Search sender, subject or text…" label="messages" empty="No messages yet." :columns="[
         'from_email' => ['label' => 'From', 'sortable' => true],
         'subject' => ['label' => 'Subject', 'sortable' => true],

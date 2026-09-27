@@ -144,15 +144,6 @@ class EmailTest extends TestCase
         $this->assertSame(1, InboundMessage::count());
     }
 
-    public function test_contact_form_and_honeypot(): void
-    {
-        $this->post('/contact', ['name' => 'Kim', 'email' => 'kim@example.com', 'subject' => 'Hi', 'message' => 'Hello there'])->assertSessionHas('status');
-        $this->post('/contact', ['name' => 'Bot', 'email' => 'bot@example.com', 'subject' => 'Buy', 'message' => 'spam', 'website' => 'http://spam'])->assertSessionHas('status');
-
-        $this->assertSame(1, InboundMessage::count());
-        $this->assertSame('contact', InboundMessage::first()->source);
-    }
-
     public function test_admin_reads_and_replies_to_inbox(): void
     {
         Mail::fake();

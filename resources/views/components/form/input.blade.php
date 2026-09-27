@@ -7,8 +7,7 @@
            @if ($type !== 'password' && $type !== 'file') value="{{ old($name, $value) }}" @endif
            {{ $attributes->except(['class', 'id'])->class(['form-control', 'is-invalid' => $errors->has($name)]) }}
            @if ($required) required @endif
-           @if ($help) aria-describedby="{{ $id }}-help" @endif>
+          >
     @error($name)<div class="invalid-feedback">{{ $message }}</div>@enderror
     @if ($prefix)</div>@endif
-    @if ($help)<div id="{{ $id }}-help" class="form-text">{{ $help }}</div>@endif
 </div>

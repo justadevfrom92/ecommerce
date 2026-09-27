@@ -20,11 +20,9 @@
                         <x-form.input class="col-md-6" name="password" label="{{ $editing ? 'New password' : 'Password' }}" type="password" autocomplete="new-password" :required="! $editing" :help="$editing ? 'Leave blank to keep the current password.' : null" />
                         <x-form.input class="col-md-6" name="password_confirmation" label="Confirm password" type="password" autocomplete="new-password" />
                     </div>
-                    @if ($isSelf)
-                        <p class="small text-body-secondary mb-0"><i class="bi bi-info-circle me-1"></i>You can't deactivate your own account.</p>
-                    @else
+                    @unless ($isSelf)
                         <x-form.check name="is_active" label="Active (can log in)" :checked="$user->is_active" />
-                    @endif
+                    @endunless
                 </div>
             </div>
             @if ($editing && isset($orders) && $orders->isNotEmpty())
@@ -46,7 +44,6 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
                     <h2 class="h6 mb-1">Roles</h2>
-                    <p class="small text-body-secondary">A user gets every permission from all of their roles.</p>
                     @error('roles.*')<div class="alert alert-danger py-2 small">{{ $message }}</div>@enderror
                     @php($checkedRoles = collect(old('roles', $userRoleIds))->map(fn ($id) => (int) $id)->all())
                     @foreach ($roles as $role)
