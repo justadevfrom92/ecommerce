@@ -8,16 +8,9 @@
         </nav>
         <h1 class="page-title">{{ $department->name }}</h1>
         @if ($department->description)
-            <p class="text-muted-2 mt-1 mb-3">{{ $department->description }}</p>
+            <p class="text-muted-2 mt-1 mb-4">{{ $department->description }}</p>
         @endif
 
-        <nav class="cat-tiles my-4" aria-label="{{ $department->name }} categories">
-            @foreach ($categories as $category)
-                <a href="{{ route('categories.show', $category) }}" class="cat-tile">
-                    <span class="cat-icon"><i class="bi bi-{{ \App\Http\Controllers\HomeController::iconFor($category->name) }}"></i></span>{{ $category->name }}
-                </a>
-            @endforeach
-        </nav>
 
         <x-product-slider :title="'Top deals in '.$department->name" icon="lightning-charge-fill" :products="$featured" />
 

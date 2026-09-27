@@ -220,15 +220,6 @@ a:hover { text-decoration: none; }
 /* ============================================================
    Home
    ============================================================ */
-.cat-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr)); gap: 1rem; }
-.cat-tile { display: flex; flex-direction: column; align-items: center; gap: .5rem; color: var(--ms-text); font-size: .8rem; font-weight: 600; text-align: center; }
-.cat-tile .cat-icon {
-    width: 3.5rem; height: 3.5rem; border-radius: .5rem; background: #e5edff; color: var(--ms-primary);
-    display: flex; align-items: center; justify-content: center; font-size: 1.45rem; transition: transform .15s ease;
-}
-.cat-tile:hover { color: var(--ms-primary); }
-.cat-tile:hover .cat-icon { transform: translateY(-2px); }
-.cat-tile.is-deals .cat-icon { background: #ffefca; color: var(--ms-orange); }
 
 .promo { position: relative; overflow: hidden; border-radius: var(--ms-radius-lg); color: #fff; min-height: 13rem; display: flex; align-items: center; }
 .promo-body { position: relative; z-index: 1; padding: 2rem 2.5rem; }
@@ -306,7 +297,7 @@ a:hover { text-decoration: none; }
 .product-slider[data-slider-static] .slider-btn { display: none; }
 @media (prefers-reduced-motion: reduce) {
     .slider-track { scroll-behavior: auto; }
-    .product-card-image img, .cat-tile .cat-icon { transition: none; }
+    .product-card-image img { transition: none; }
 }
 
 /* ============================================================
