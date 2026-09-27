@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
 class AccountController extends Controller
@@ -35,20 +35,14 @@ class AccountController extends Controller
         return back()->with('status', 'Profile updated.');
     }
 
-    public function editPassword(): View
+    /**
+     * Password changes happen only through an emailed, single-use reset link
+     * (the same secure flow as "Forgot password?"), never on the account page.
+     */
+    public function sendPasswordReset(Request $request): RedirectResponse
     {
-        return view('account.password');
-    }
+        Password::sendResetLink(['email' => $request->user()->email]);
 
-    public function updatePassword(Request $request): RedirectResponse
-    {
-        $data = $request->validate([
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', 'confirmed', Password::defaults()],
-        ]);
-
-        $request->user()->update(['password' => $data['password']]);
-
-        return back()->with('status', 'Password updated.');
+        return back()->with('status', "We've emailed a password reset link to {$request->user()->email}. It expires in ".config('auth.passwords.users.expire', 60).' minutes.');
     }
 }

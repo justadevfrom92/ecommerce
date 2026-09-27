@@ -15,10 +15,16 @@
 </nav>
 <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
     <h1 class="page-title">Profile</h1>
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button class="btn btn-soft btn-sm"><i class="bi bi-box-arrow-right me-1"></i>Log out</button>
-    </form>
+    <div class="d-flex gap-2">
+        <form method="POST" action="{{ route('account.password.reset-link') }}" data-confirm="Email a password reset link to {{ $user->email }}?">
+            @csrf
+            <button class="btn btn-soft btn-sm"><i class="bi bi-key me-1"></i>Reset password</button>
+        </form>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button class="btn btn-soft btn-sm"><i class="bi bi-box-arrow-right me-1"></i>Log out</button>
+        </form>
+    </div>
 </div>
 
 <div class="row g-3 mb-4">
@@ -64,5 +70,4 @@
 <ul class="nav icon-tabs mb-4">
     <li class="nav-item"><a href="{{ route('account.orders.index') }}" class="nav-link @if (request()->routeIs('account.orders.*')) active @endif"><i class="bi bi-cart-fill me-1"></i>Orders <span class="count">({{ $orderCount }})</span></a></li>
     <li class="nav-item"><a href="{{ route('account.edit') }}" class="nav-link @if (request()->routeIs('account.edit')) active @endif"><i class="bi bi-person-fill me-1"></i>Personal info</a></li>
-    <li class="nav-item"><a href="{{ route('account.password.edit') }}" class="nav-link @if (request()->routeIs('account.password.*')) active @endif"><i class="bi bi-key-fill me-1"></i>Password</a></li>
 </ul>

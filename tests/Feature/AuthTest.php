@@ -2,8 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Mail\StoreMail;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
@@ -84,19 +87,40 @@ class AuthTest extends TestCase
             ->assertSee('Create an account');
     }
 
-    public function test_user_can_update_profile_and_password(): void
+    public function test_user_can_update_profile(): void
     {
-        $user = User::factory()->create(['password' => 'old-password-1']);
+        $user = User::factory()->create();
 
         $this->actingAs($user)->put('/account', ['name' => 'New Name', 'email' => 'new@example.com'])->assertSessionHasNoErrors();
         $this->assertSame('New Name', $user->fresh()->name);
+    }
 
-        $this->actingAs($user)->put('/account/password', [
-            'current_password' => 'wrong', 'password' => 'new-password-1', 'password_confirmation' => 'new-password-1',
-        ])->assertSessionHasErrors('current_password');
+    public function test_password_is_changed_only_through_an_emailed_link(): void
+    {
+        Mail::fake();
+        $user = User::factory()->create(['password' => 'old-password-1']);
 
-        $this->actingAs($user)->put('/account/password', [
-            'current_password' => 'old-password-1', 'password' => 'new-password-1', 'password_confirmation' => 'new-password-1',
-        ])->assertSessionHasNoErrors();
+        // No password form on the account page any more.
+        $this->actingAs($user)->put('/account/password', ['password' => 'x'])->assertNotFound();
+
+        $this->actingAs($user)->post('/account/password-reset')->assertSessionHas('status');
+
+        $url = null;
+        Mail::assertSent(StoreMail::class, function (StoreMail $m) use ($user, &$url) {
+            $url = $m->buttonUrl;
+
+            return $m->hasTo($user->email) && $m->templateKey === 'password_reset';
+        });
+
+        // The emailed link works while signed in.
+        $path = parse_url($url, PHP_URL_PATH);
+        $this->actingAs($user)->get($path.'?email='.urlencode($user->email))->assertOk()->assertSee('Reset new password');
+
+        $token = basename($path);
+        $this->actingAs($user)->post('/reset-password', [
+            'token' => $token, 'email' => $user->email, 'password' => 'brand-new-pass-1', 'password_confirmation' => 'brand-new-pass-1',
+        ])->assertRedirect(route('login'));
+
+        $this->assertTrue(Hash::check('brand-new-pass-1', $user->fresh()->password));
     }
 }

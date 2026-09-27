@@ -65,9 +65,11 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [RegisterController::class, 'store'])->middleware('throttle:10,1');
     Route::get('/forgot-password', [PasswordResetController::class, 'request'])->name('password.request');
     Route::post('/forgot-password', [PasswordResetController::class, 'email'])->middleware('throttle:5,1')->name('password.email');
-    Route::get('/reset-password/{token}', [PasswordResetController::class, 'edit'])->name('password.reset');
-    Route::post('/reset-password', [PasswordResetController::class, 'update'])->name('password.update');
 });
+
+// The emailed reset link must work whether or not the person is signed in.
+Route::get('/reset-password/{token}', [PasswordResetController::class, 'edit'])->name('password.reset');
+Route::post('/reset-password', [PasswordResetController::class, 'update'])->middleware('throttle:10,1')->name('password.update');
 
 Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
 
@@ -79,8 +81,7 @@ Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')-
 Route::middleware('auth')->prefix('account')->name('account.')->group(function () {
     Route::get('/', [AccountController::class, 'edit'])->name('edit');
     Route::put('/', [AccountController::class, 'update'])->name('update');
-    Route::get('/password', [AccountController::class, 'editPassword'])->name('password.edit');
-    Route::put('/password', [AccountController::class, 'updatePassword'])->name('password.update');
+    Route::post('/password-reset', [AccountController::class, 'sendPasswordReset'])->middleware('throttle:3,10')->name('password.reset-link');
     Route::get('/orders', [AccountOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [AccountOrderController::class, 'show'])->name('orders.show');
 });
