@@ -6,13 +6,6 @@
 @endphp
 <x-layouts.store :title="$category->name">
     <div class="container-xxl py-4">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('departments.show', $category->department) }}">{{ $category->department->name }}</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ $category->name }}</li>
-            </ol>
-        </nav>
         <h1 class="page-title">{{ $category->name }}</h1>
         @if ($category->description)
             <p class="text-muted-2 mt-1">{{ $category->description }}</p>

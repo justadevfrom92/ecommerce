@@ -1,4 +1,4 @@
-<x-layouts.admin :title="'Order #'.$order->number" :crumbs="['Orders' => route('admin.orders.index')]">
+<x-layouts.admin :title="'Order #'.$order->number">
     <x-slot:actions>
         {{ $order->statusPill() }}
         @if ($order->email)

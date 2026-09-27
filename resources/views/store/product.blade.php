@@ -1,12 +1,5 @@
 <x-layouts.store :title="$product->name">
     <div class="container-xxl py-4">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('departments.show', $product->category->department) }}">{{ $product->category->department->name }}</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('categories.show', $product->category) }}">{{ $product->category->name }}</a></li>
-                <li class="breadcrumb-item active text-truncate" aria-current="page">{{ $product->name }}</li>
-            </ol>
-        </nav>
 
         <div class="row g-4 g-lg-5 mb-5 mt-1">
             <div class="col-lg-6">

@@ -7,12 +7,6 @@
     $orderCount = $user->orders()->count();
     $lastOrder = $user->orders()->latest()->first();
 @endphp
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">My account</li>
-    </ol>
-</nav>
 <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
     <h1 class="page-title">Profile</h1>
     <div class="d-flex gap-2">

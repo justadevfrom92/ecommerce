@@ -1,4 +1,4 @@
-@props(['title' => null, 'heading' => null, 'subtitle' => null, 'crumbs' => []])
+@props(['title' => null, 'heading' => null, 'subtitle' => null])
 @php
     // Sidebar sections. A link shows only if its route exists and the user holds its permission.
     $nav = [
@@ -115,15 +115,6 @@
     <main id="main" class="admin-main flex-grow-1">
         @if ($heading ?? $title)
             <div class="admin-page-head">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Admin</a></li>
-                        @foreach ($crumbs as $label => $url)
-                            <li class="breadcrumb-item"><a href="{{ $url }}">{{ $label }}</a></li>
-                        @endforeach
-                        <li class="breadcrumb-item active" aria-current="page">{{ $heading ?? $title }}</li>
-                    </ol>
-                </nav>
                 <div class="d-flex flex-wrap align-items-end justify-content-between gap-3">
                     <div>
                         <h1 class="page-title">{{ $heading ?? $title }}</h1>

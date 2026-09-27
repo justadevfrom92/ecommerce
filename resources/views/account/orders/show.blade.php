@@ -1,12 +1,5 @@
 <x-layouts.store :title="'Order '.$order->number">
     <div class="container-xxl py-4">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('account.edit') }}">My account</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('account.orders.index') }}">Orders</a></li>
-                <li class="breadcrumb-item active" aria-current="page">#{{ $order->number }}</li>
-            </ol>
-        </nav>
         <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
             <div>
                 <h1 class="page-title">Order #{{ $order->number }}</h1>

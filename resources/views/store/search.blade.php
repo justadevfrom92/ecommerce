@@ -6,12 +6,6 @@
 @endphp
 <x-layouts.store :title="$term !== '' ? 'Search: '.$term : 'Shop all'">
     <div class="container-xxl py-4">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ $term !== '' ? 'Search' : 'Products' }}</li>
-            </ol>
-        </nav>
         <h1 class="page-title mb-4">
             @if ($term !== '') Results for “{{ $term }}” @else {{ request()->boolean('on_sale') ? 'Deals' : 'All products' }} @endif
         </h1>

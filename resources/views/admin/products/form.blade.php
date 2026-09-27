@@ -1,5 +1,5 @@
 @php($editing = $product->exists)
-<x-layouts.admin :title="$editing ? 'Edit product' : 'Add a product'" :subtitle="$editing ? $product->name : 'Products placed across your store'" :crumbs="['Products' => route('admin.products.index')]">
+<x-layouts.admin :title="$editing ? 'Edit product' : 'Add a product'" :subtitle="$editing ? $product->name : 'Products placed across your store'">
     <x-slot:actions>
         <a href="{{ route('admin.products.index') }}" class="btn btn-soft">Discard</a>
         @if ($editing)
