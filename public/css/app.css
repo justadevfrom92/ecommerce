@@ -447,22 +447,14 @@ a:hover { text-decoration: none; }
 .admin-sidebar .admin-nav-group { color: #6c757d !important; }
 .admin-nav-group { font-size: .7rem; letter-spacing: .06em; }
 
-/* Dashboard */
-.dash-flag { display: flex; align-items: center; gap: .85rem; }
-.dash-flag .flag-icon { width: 2.6rem; height: 2.6rem; border-radius: .6rem; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; }
-.dash-flag .flag-num { font-size: 1.25rem; font-weight: 800; color: var(--ms-heading); line-height: 1.1; }
-.dash-flag .flag-label { font-size: .8rem; color: var(--ms-text-2); }
-.kpi-title { font-size: 1rem; font-weight: 800; color: var(--ms-heading); margin-bottom: 0; }
-.kpi-sub { font-size: .8rem; color: var(--ms-text-2); }
-.kpi-value { font-size: 1.35rem; font-weight: 800; color: var(--ms-heading); font-variant-numeric: tabular-nums; }
+
+/* Sales chart (admin → Sales report) */
 .chart-svg { width: 100%; height: auto; display: block; overflow: visible; }
 .chart-svg .grid { stroke: var(--ms-line); stroke-width: 1; }
 .chart-svg .axis-label { fill: var(--ms-text-2); font-size: 11px; font-family: var(--ms-font); }
-.chart-svg .line { fill: none; stroke: var(--ms-primary); stroke-width: 2.25; stroke-linejoin: round; stroke-linecap: round; }
+.chart-svg .line { fill: none; stroke: var(--ms-primary); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
 .chart-svg .area { fill: rgba(var(--ms-primary-rgb), .08); stroke: none; }
 .chart-svg .dot { fill: var(--ms-primary); stroke: #fff; stroke-width: 2; }
-.meter { height: .45rem; border-radius: 1rem; background: var(--ms-highlight); overflow: hidden; }
-.meter > span { display: block; height: 100%; background: var(--ms-primary); border-radius: 1rem; }
 
 /* Legacy helpers still used by a few views */
 .stat-card .stat-icon { width: 2.75rem; height: 2.75rem; border-radius: .75rem; display: inline-flex; align-items: center; justify-content: center; font-size: 1.25rem; }

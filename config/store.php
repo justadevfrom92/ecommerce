@@ -32,7 +32,6 @@ return [
     'permissions' => [
         'General' => [
             'admin.access' => 'Access the admin area',
-            'dashboard.view' => 'View the dashboard',
             'settings.manage' => 'Manage site settings & homepage sliders',
         ],
         'Catalog' => [

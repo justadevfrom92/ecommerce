@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -26,7 +27,7 @@ class AdminAccessTest extends TestCase
     {
         $admin = $this->superAdmin();
 
-        $this->actingAs($admin)->get('/admin')->assertOk()->assertSee('Low stock');
+        $this->actingAs($admin)->get('/admin')->assertRedirect(route('admin.orders.index'));
         $this->actingAs($admin)->get('/admin/users')->assertOk();
         $this->actingAs($admin)->get('/admin/products')->assertOk();
     }
@@ -38,8 +39,9 @@ class AdminAccessTest extends TestCase
         $this->actingAs($user)->get('/admin/products')->assertOk();
         $this->actingAs($user)->get('/admin/users')->assertForbidden();
 
-        // Sidebar only lists what the role can open.
-        $this->actingAs($user)->get('/admin')->assertOk()
+        // /admin opens the first section the role can use; the sidebar only lists what it can open.
+        $this->actingAs($user)->get('/admin')->assertRedirect(route('admin.products.index'));
+        $this->actingAs($user)->get('/admin/products')->assertOk()
             ->assertSee(route('admin.products.index'))
             ->assertDontSee(route('admin.users.index'));
     }
@@ -72,5 +74,28 @@ class AdminAccessTest extends TestCase
         Product::factory()->count(3)->create();
 
         $this->actingAs($admin)->get('/admin/products?sort=password&direction=asc;drop')->assertOk();
+    }
+
+    public function test_sales_report_page(): void
+    {
+        $admin = $this->superAdmin();
+        Order::factory()->create(['status' => 'paid', 'total' => 120, 'created_at' => now()->subDay()]);
+
+        $this->actingAs($admin)->get('/admin/sales')->assertOk()->assertSee('Revenue')->assertSee('$120.00');
+
+        $noOrders = $this->userWithPermissions(['admin.access', 'products.view']);
+        $this->actingAs($noOrders)->get('/admin/sales')->assertForbidden();
+    }
+
+    public function test_low_stock_table_lists_out_of_stock_first(): void
+    {
+        $admin = $this->superAdmin();
+        Product::factory()->create(['name' => 'Few Left', 'stock' => 3]);
+        Product::factory()->create(['name' => 'All Gone', 'stock' => 0]);
+        Product::factory()->create(['name' => 'Plenty Here', 'stock' => 80]);
+
+        $this->actingAs($admin)->get('/admin/stock')->assertOk()
+            ->assertSeeInOrder(['All Gone', 'Out of stock', 'Few Left', '3 left'])
+            ->assertDontSee('Plenty Here');
     }
 }

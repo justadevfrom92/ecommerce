@@ -94,12 +94,14 @@ Route::middleware(['auth', 'can:admin.access'])->prefix('admin')->name('admin.')
 
     // Catalog
     Route::get('/products', [Admin\ProductController::class, 'index'])->middleware('can:products.view')->name('products.index');
+    Route::get('/stock', Admin\StockController::class)->middleware('can:products.view')->name('stock');
     Route::resource('products', Admin\ProductController::class)->except(['index', 'show'])->middleware('can:products.manage');
     Route::resource('departments', Admin\DepartmentController::class)->except('show')->middleware('can:departments.manage');
     Route::resource('categories', Admin\CategoryController::class)->except('show')->middleware('can:categories.manage');
 
     // Sales
     Route::get('/orders', [Admin\OrderController::class, 'index'])->middleware('can:orders.view')->name('orders.index');
+    Route::get('/sales', Admin\SalesController::class)->middleware('can:orders.view')->name('sales');
     Route::get('/orders/{order}', [Admin\OrderController::class, 'show'])->middleware('can:orders.view')->name('orders.show');
     Route::patch('/orders/{order}', [Admin\OrderController::class, 'update'])->middleware('can:orders.manage')->name('orders.update');
 

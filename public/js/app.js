@@ -76,7 +76,7 @@
 
     document.querySelectorAll('[data-slider]').forEach(initSlider);
 
-    /* ---------- Dashboard line chart: crosshair + tooltip ---------- */
+    /* ---------- Sales chart: crosshair + tooltip ---------- */
     document.querySelectorAll('[data-line-chart]').forEach(function (wrap) {
         var svg = wrap.querySelector('svg'), tip = wrap.querySelector('.chart-tip');
         var cross = svg.querySelector('.crosshair'), dot = svg.querySelector('.hover-dot');

@@ -30,14 +30,14 @@ class PermissionSeeder extends Seeder
 
         $starter = [
             'store-manager' => ['Store Manager', 'Runs the catalog and orders.', [
-                'admin.access', 'dashboard.view', 'products.view', 'products.manage', 'departments.manage',
+                'admin.access', 'products.view', 'products.manage', 'departments.manage',
                 'categories.manage', 'orders.view', 'orders.manage', 'users.view',
             ]],
             'support' => ['Customer Support', 'Handles orders and the inbox.', [
                 'admin.access', 'orders.view', 'users.view', 'emails.inbox', 'emails.log',
             ]],
             'marketing' => ['Marketing', 'Email templates and homepage sliders.', [
-                'admin.access', 'dashboard.view', 'products.view', 'emails.templates', 'settings.manage',
+                'admin.access', 'products.view', 'emails.templates', 'settings.manage',
             ]],
         ];
 

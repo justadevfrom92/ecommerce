@@ -1,6 +1,6 @@
-{{-- 30-day revenue line (single series, inline SVG, hover crosshair + tooltip, table fallback). Expects $series. --}}
+{{-- Compact 30-day revenue line (single series, inline SVG, hover crosshair + tooltip, table fallback). Expects $series. --}}
 @php
-    $w = 800; $h = 260; $pl = 56; $pr = 12; $pt = 12; $pb = 28;
+    $w = 800; $h = 180; $pl = 52; $pr = 12; $pt = 10; $pb = 26;
     $max = max(1, $series->max('value'));
     $mag = 10 ** floor(log10($max));
     $step = collect([1, 2, 2.5, 5, 10])->map(fn ($m) => $m * $mag)->first(fn ($s) => $max / $s <= 4) ?? $mag * 10;

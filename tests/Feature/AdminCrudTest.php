@@ -28,7 +28,7 @@ class AdminCrudTest extends TestCase
         $slider = HomeSlider::create(['title' => 'X', 'source' => 'featured']);
 
         $pages = [
-            '/admin', '/admin/products', '/admin/products/create', "/admin/products/{$product->slug}/edit",
+            '/admin/products', '/admin/products/create', "/admin/products/{$product->slug}/edit",
             '/admin/departments', '/admin/departments/create', "/admin/departments/{$product->category->department->slug}/edit",
             '/admin/categories', '/admin/categories/create', "/admin/categories/{$product->category->slug}/edit",
             '/admin/orders', "/admin/orders/{$order->number}",
@@ -216,7 +216,7 @@ class AdminCrudTest extends TestCase
     {
         $admin = $this->superAdmin();
         $category = Category::factory()->create();
-        Product::factory()->create(['category_id' => $category->id, 'name' => 'Category Pick']);
+        Product::factory()->create(['category_id' => $category->id, 'name' => 'Category Pick', 'stock' => 10]);
 
         $this->actingAs($admin)->post('/admin/sliders', [
             'title' => 'Hand picked', 'source' => 'category', 'category_id' => $category->id,

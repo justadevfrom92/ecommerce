@@ -50,7 +50,6 @@ are seeded too.
 
 | Section | URL | Permission |
 | --- | --- | --- |
-| Dashboard | `/admin` | `dashboard.view` (numbers) |
 | Products | `/admin/products` | `products.view` / `products.manage` |
 | Departments | `/admin/departments` | `departments.manage` |
 | Categories | `/admin/categories` | `categories.manage` |
@@ -63,7 +62,7 @@ are seeded too.
 | Site settings | `/admin/settings` | `settings.manage` |
 | Homepage sliders | `/admin/sliders` | `settings.manage` |
 
-Every admin route also requires `admin.access`.
+Every admin route also requires `admin.access`. `/admin` itself opens the first section the person's role can use.
 
 ### Reusable pieces
 

@@ -2,16 +2,15 @@
 @php
     // Sidebar sections. A link shows only if its route exists and the user holds its permission.
     $nav = [
-        'Overview' => [
-            ['route' => 'admin.dashboard', 'label' => 'Dashboard', 'icon' => 'speedometer2', 'can' => 'dashboard.view', 'match' => 'admin.dashboard'],
-        ],
         'Catalog' => [
             ['route' => 'admin.products.index', 'label' => 'Products', 'icon' => 'box-seam', 'can' => 'products.view', 'match' => 'admin.products.*'],
+            ['route' => 'admin.stock', 'label' => 'Low stock', 'icon' => 'exclamation-triangle', 'can' => 'products.view', 'match' => 'admin.stock'],
             ['route' => 'admin.departments.index', 'label' => 'Departments', 'icon' => 'diagram-3', 'can' => 'departments.manage', 'match' => 'admin.departments.*'],
             ['route' => 'admin.categories.index', 'label' => 'Categories', 'icon' => 'tags', 'can' => 'categories.manage', 'match' => 'admin.categories.*'],
         ],
         'Sales' => [
             ['route' => 'admin.orders.index', 'label' => 'Orders', 'icon' => 'receipt', 'can' => 'orders.view', 'match' => 'admin.orders.*'],
+            ['route' => 'admin.sales', 'label' => 'Sales report', 'icon' => 'graph-up', 'can' => 'orders.view', 'match' => 'admin.sales'],
         ],
         'People' => [
             ['route' => 'admin.users.index', 'label' => 'Users', 'icon' => 'people', 'can' => 'users.view', 'match' => 'admin.users.*'],
