@@ -118,14 +118,16 @@ a:hover { text-decoration: none; }
 
 /* ---------- Forms ---------- */
 .form-control, .form-select {
+    background-color: var(--ms-panel); /* white fields on the grey page */
     border-color: var(--ms-line-strong); border-radius: var(--ms-radius); color: var(--ms-heading); font-size: .875rem;
 }
 .form-control::placeholder { color: var(--ms-muted); }
 .form-control:focus, .form-select:focus { border-color: var(--ms-primary); box-shadow: 0 0 0 .2rem rgba(var(--ms-primary-rgb), .15); }
 .form-label { font-weight: 700; color: var(--ms-heading); font-size: .8rem; margin-bottom: .35rem; }
 .form-label-caps { text-transform: uppercase; letter-spacing: .02em; font-size: .7rem; font-weight: 800; color: var(--ms-text-2); padding-left: 1rem; }
+
+.form-check-input { border-color: var(--ms-line-strong); background-color: var(--ms-panel); }
 .form-check-input:checked { background-color: var(--ms-primary); border-color: var(--ms-primary); }
-.form-check-input { border-color: var(--ms-line-strong); }
 .form-text { color: var(--ms-muted); }
 .input-icon { position: relative; }
 .input-icon > .bi { position: absolute; left: .85rem; top: 50%; transform: translateY(-50%); color: var(--ms-text-2); pointer-events: none; }
