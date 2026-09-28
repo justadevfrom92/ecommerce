@@ -6,10 +6,10 @@
 @endphp
 <x-layouts.store :title="$category->name">
     <div class="container-xxl py-4">
-        <h1 class="page-title">{{ $category->name }}</h1>
-        @if ($category->description)
-            <p class="text-muted-2 mt-1">{{ $category->description }}</p>
-        @endif
+        <div class="page-banner banner-orange">
+            <h1 class="page-title">{{ $category->name }}</h1>
+            <p class="mb-0">{{ $category->description ?: 'Shop '.$category->name.' in '.$category->department->name }}</p>
+        </div>
 
         <div class="row g-4 g-xl-5 mt-1">
             <aside class="col-lg-3 col-xl-2">

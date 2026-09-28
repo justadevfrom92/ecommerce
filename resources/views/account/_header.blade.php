@@ -7,8 +7,8 @@
     $orderCount = $user->orders()->count();
     $lastOrder = $user->orders()->latest()->first();
 @endphp
-<div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
-    <h1 class="page-title">Profile</h1>
+<div class="page-banner banner-purple d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div><h1 class="page-title">My account</h1><p class="mb-0">Hi {{ strtok($user->name, ' ') }}, welcome back.</p></div>
     <div class="d-flex gap-2">
         <form method="POST" action="{{ route('account.password.reset-link') }}" data-confirm="Email a password reset link to {{ $user->email }}?">
             @csrf

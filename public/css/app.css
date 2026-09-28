@@ -557,3 +557,101 @@ a:hover { text-decoration: none; }
     .product-card, .btn { transition: none; }
     .product-card:hover, .btn-primary:hover { transform: none; }
 }
+
+/* ============================================================
+   Bold & colorful theme (store only; admin keeps its own look)
+   ============================================================ */
+body:not(.admin-body) { background: #f3f6ff; }
+
+/* Header: vivid blue gradient bar with white controls */
+.site-topbar {
+    background: linear-gradient(100deg, #1d3fe0 0%, #3874ff 45%, #6a4dff 100%);
+    border-bottom: 0;
+}
+.site-topbar .container-xxl { min-height: 4.5rem; }
+.site-logo { background: #fff; border-radius: 50%; padding: .3rem; box-shadow: 0 6px 16px -8px rgba(0, 0, 0, .45); }
+.site-topbar .nav-icon-btn { color: #fff; border-radius: 50%; }
+.site-topbar .nav-icon-btn:hover, .site-topbar .nav-icon-btn:focus-visible { color: #fff; background: rgba(255, 255, 255, .18); }
+.site-topbar .cart-badge { background: #ffcc33 !important; color: #1b1f3b; box-shadow: 0 0 0 2px #3874ff; }
+.site-topbar .search-pill .form-control { background: #fff; border-color: #fff; box-shadow: 0 8px 20px -12px rgba(0, 0, 0, .5); }
+
+/* Navbar: solid pill for the active / hovered link */
+.site-navbar { box-shadow: 0 10px 24px -18px rgba(29, 63, 224, .6); }
+.site-navbar .nav-link { margin-block: .4rem; padding: .4rem .9rem; border-radius: 2rem; }
+.site-navbar .nav-link.active::after, .site-navbar .nav-link:hover::after { content: none; }
+.site-navbar .nav-link:hover { background: #eaf0ff; color: #1d3fe0; }
+.site-navbar .nav-link.active { background: linear-gradient(100deg, #1d3fe0, #3874ff); color: #fff; box-shadow: 0 6px 14px -8px rgba(29, 63, 224, .9); }
+.category-toggle { color: #1d3fe0; }
+
+/* Buttons: gradient primary with a chunky feel */
+body:not(.admin-body) .btn-primary {
+    background: linear-gradient(100deg, #1d3fe0 0%, #3874ff 60%, #5a6bff 100%); border: 0;
+    box-shadow: 0 8px 18px -10px rgba(29, 63, 224, .95);
+}
+body:not(.admin-body) .btn-primary:hover { background: linear-gradient(100deg, #1834c2 0%, #2f66f0 60%, #4d5cf0 100%); }
+body:not(.admin-body) .btn-outline-primary { border-width: 2px; }
+
+/* Headings: heavier and tighter */
+body:not(.admin-body) .section-title { font-size: 1.85rem; font-weight: 900; letter-spacing: -.02em; }
+body:not(.admin-body) .page-title { font-weight: 900; letter-spacing: -.02em; }
+
+/* Hero: bigger, louder */
+.promo-hero { min-height: 22rem; }
+.promo-hero h2 { font-size: clamp(2.2rem, 5.5vw, 3.75rem); font-weight: 900; }
+.promo-hero p { font-size: clamp(1.1rem, 2.2vw, 1.6rem); }
+.promo .btn-light { font-size: 1rem; padding: .8rem 1.6rem; }
+
+/* Page title banners (cart, checkout, search, category, department, account) */
+.page-banner {
+    position: relative; overflow: hidden; isolation: isolate; color: #fff;
+    border-radius: 1.25rem; padding: 2rem 2.25rem; box-shadow: 0 16px 32px -22px rgba(20, 24, 60, .8);
+}
+.page-banner::before, .page-banner::after { content: ""; position: absolute; z-index: -1; border-radius: 50%; pointer-events: none; }
+.page-banner::before { width: 18rem; height: 18rem; right: -4rem; top: -8rem; background: rgba(255, 255, 255, .16); }
+.page-banner::after { width: 9rem; height: 9rem; right: 16%; bottom: -5rem; border: 2px solid rgba(255, 255, 255, .25); }
+.page-banner .page-title { color: #fff; font-size: clamp(1.8rem, 4vw, 2.6rem); }
+.page-banner p { font-size: 1.05rem; font-weight: 600; opacity: .92; }
+.page-banner .btn-soft { background: rgba(255, 255, 255, .95); border-color: transparent; }
+.banner-blue   { background: linear-gradient(115deg, #1d3fe0 0%, #3874ff 55%, #22b8ff 100%); }
+.banner-green  { background: linear-gradient(115deg, #0b8a5f 0%, #16b67a 55%, #6ddc8b 100%); }
+.banner-purple { background: linear-gradient(115deg, #5b21e6 0%, #8b3cf0 55%, #d14cf0 100%); }
+.banner-orange { background: linear-gradient(115deg, #e8480c 0%, #ff7a1a 55%, #ffb627 100%); }
+@media (max-width: 575.98px) { .page-banner { padding: 1.5rem; } }
+
+/* Sliders: each sits on its own colored band */
+.product-slider[class*="band-"] { padding: 1.75rem 1.75rem 1rem; border-radius: 1.5rem; margin-bottom: 2rem; }
+.product-slider[class*="band-"] + .product-slider { padding-top: 1.75rem; border-top: 0; }
+.product-slider[class*="band-"] .section-title { color: #fff; }
+.product-slider[class*="band-"] .text-muted-2 { color: rgba(255, 255, 255, .85) !important; }
+.product-slider[class*="band-"] .explore-link { background: #fff; color: #1b1f3b; box-shadow: 0 6px 14px -8px rgba(0, 0, 0, .5); }
+.product-slider[class*="band-"] .explore-link:hover { background: #1b1f3b; color: #fff; }
+.product-slider[class*="band-"] .slider-btn-prev { left: .5rem; }
+.product-slider[class*="band-"] .slider-btn-next { right: .5rem; }
+.product-slider[class*="band-"] .product-card { box-shadow: 0 10px 24px -16px rgba(0, 0, 0, .55); }
+.band-0 { background: linear-gradient(120deg, #1d3fe0 0%, #3874ff 60%, #22b8ff 100%); }
+.band-1 { background: linear-gradient(120deg, #e8480c 0%, #ff7a1a 60%, #ffb627 100%); }
+.band-2 { background: linear-gradient(120deg, #0b8a5f 0%, #16b67a 60%, #6ddc8b 100%); }
+.band-3 { background: linear-gradient(120deg, #d61f69 0%, #f0457f 60%, #ff8fa3 100%); }
+.band-4 { background: linear-gradient(120deg, #5b21e6 0%, #8b3cf0 60%, #d14cf0 100%); }
+@media (max-width: 575.98px) { .product-slider[class*="band-"] { padding: 1.25rem 1rem .75rem; border-radius: 1.1rem; } }
+
+/* Product cards: bright solid badges and a colored price */
+.product-card .pc-flag { font-weight: 800; border: 0; box-shadow: 0 4px 10px -6px rgba(0, 0, 0, .5); }
+.product-card .pc-flag.pill-danger { background: #ff3b30; color: #fff; }
+.product-card .pc-flag.pill-success { background: #16b67a; color: #fff; }
+.product-card .pc-title { font-weight: 800; }
+.price-now { color: #1d3fe0; font-weight: 900; }
+.price-now.is-sale { color: #ff3b30; }
+
+/* Member sign-up: full color band */
+.member-cta { background: linear-gradient(120deg, #1d3fe0 0%, #6a4dff 55%, #d14cf0 100%); color: #fff; }
+.member-cta .lead-q, .member-cta .big, .member-cta .big strong { color: #fff; }
+.member-cta .big strong { color: #ffcc33; }
+.member-cta .btn-primary { background: #fff !important; color: #1d3fe0; }
+.member-cta .btn-outline-primary { color: #fff; border-color: #fff; }
+.member-cta .btn-outline-primary:hover { background: #fff; color: #1d3fe0; }
+
+/* Footer: deep blue to match the header */
+.site-footer { background: linear-gradient(180deg, #121a4a 0%, #0b1030 100%); }
+.member-cta .member-art { color: #fff; }
+.member-cta .lead-q strong { color: #fff; }

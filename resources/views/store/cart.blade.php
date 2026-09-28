@@ -1,6 +1,6 @@
 <x-layouts.store title="Cart">
     <div class="container-xxl py-4">
-        <h1 class="page-title mb-4">Cart</h1>
+        <div class="page-banner banner-blue mb-4"><h1 class="page-title">Cart</h1><p class="mb-0">{{ $lines->sum('quantity') }} {{ Str::plural('item', $lines->sum('quantity')) }} ready to go</p></div>
 
         @if ($lines->isEmpty())
             <div class="panel panel-body text-center py-5 mb-5">
@@ -72,6 +72,6 @@
             </div>
         @endif
 
-        <x-product-slider title="Customers also bought" :products="$suggestions" :view-all="route('search')" />
+        <x-product-slider class="band-2" title="Customers also bought" :products="$suggestions" :view-all="route('search')" />
     </div>
 </x-layouts.store>

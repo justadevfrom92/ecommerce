@@ -41,7 +41,7 @@
 
         {{-- Product sliders (managed in Admin → Homepage sliders) --}}
         @foreach ($sliders as $slider)
-            <x-product-slider :title="$slider['title']" :products="$slider['products']" :view-all="$slider['viewAll']" />
+            <x-product-slider :class="'band-'.($loop->index % 5)" :title="$slider['title']" :products="$slider['products']" :view-all="$slider['viewAll']" />
         @endforeach
 
         {{-- Member sign-up (guests) --}}

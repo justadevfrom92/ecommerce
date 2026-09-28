@@ -97,7 +97,7 @@
             </div>
         </div>
 
-        <x-product-slider title="Similar Products" subtitle="Essential for a better life" :products="$related" :view-all="route('categories.show', $product->category)" />
-        <x-product-slider :title="'More from '.$product->category->department->name" :products="$departmentPicks" :view-all="route('departments.show', $product->category->department)" />
+        <x-product-slider class="band-0" title="Similar Products" subtitle="Essential for a better life" :products="$related" :view-all="route('categories.show', $product->category)" />
+        <x-product-slider class="band-3" :title="'More from '.$product->category->department->name" :products="$departmentPicks" :view-all="route('departments.show', $product->category->department)" />
     </div>
 </x-layouts.store>
