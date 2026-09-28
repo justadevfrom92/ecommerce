@@ -1,7 +1,5 @@
 <x-layouts.store title="Check out">
     <div class="container-xxl py-4">
-        <div class="page-banner banner-green mb-4"><h1 class="page-title">Check out</h1><p class="mb-0">Almost there: confirm your details and pay securely.</p></div>
-
         @error('cart')
             <div class="alert alert-danger">{{ $message }} <a href="{{ route('cart.index') }}">Go to cart</a></div>
         @enderror
