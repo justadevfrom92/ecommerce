@@ -1,7 +1,5 @@
 <x-layouts.store title="Cart">
     <div class="container-xxl py-4">
-        <div class="page-banner banner-blue mb-4"><h1 class="page-title">Cart</h1><p class="mb-0">{{ $lines->sum('quantity') }} {{ Str::plural('item', $lines->sum('quantity')) }} ready to go</p></div>
-
         @if ($lines->isEmpty())
             <div class="panel panel-body text-center py-5 mb-5">
                 <i class="bi bi-cart3 fs-1 text-muted-2 d-block mb-3"></i>
